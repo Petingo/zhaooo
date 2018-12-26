@@ -24,27 +24,36 @@ urls['/login'] = {
     controller: 'login'
 }
 
+function htmlPage(response, fileName, data){
+    response.writeHead(200, {"Content-Type": "text/html"});
+    response.write(nunjucks.render(fileName, data));
+    response.end();
+}
+
 views['index'] = function(request, response) {
     console.log('index')
-    response.writeHead(200, {"Content-Type": "text/plain"});
-    response.write("Hello World");
-    response.end();
+
+    let data = {
+        title: "index",
+        name: model.getName()
+    }
+
+    htmlPage(response, "index.html", data)
 }
 
 views['login'] = function(request, response) {
     console.log('login')
-    response.writeHead(200, {"Content-Type": "text/html"});
 
     let data = {
         title: "login",
-        name: model.getName()
+        message: "login page"
     }
-    
-    response.write(nunjucks.render("index.html", data));
-    response.end();
+
+    htmlPage(response, "login.html", data)
 }
 
 staticServer = new static.Server('./');
+
 function requestHandler(request, response){
 
     if(request.url.includes("static")){
@@ -57,8 +66,14 @@ function requestHandler(request, response){
             console.error("invalid request")
         }
         else{
-            let controller = views[url.controller]
-            return controller(request, response)
+            let controller = url.controller
+            if(typeof(controller) == "string"){
+                return views[url.controller](request, response)
+            }
+            else if(typeof(controller == "function")){
+                return controller(request, response)
+            }
+            
         }
     }
     
