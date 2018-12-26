@@ -1,0 +1,15 @@
+{
+  "name": "zhaooo",
+  "version": "1.0.0",
+  "description": "fucking homework",
+  "main": "controller.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "zhaooo",
+  "license": "MIT",
+  "dependencies": {
+    "mysql": "^2.16.0",
+    "nunjucks": "^3.1.6"
+  }
+}
