@@ -1,6 +1,9 @@
 const nunjucks = require('nunjucks')
 const http = require('http')
+const static = require('node-static')
+
 const model = require('./model')
+
 
 const host = "127.0.0.1"
 const port = 8000
@@ -41,17 +44,24 @@ views['login'] = function(request, response) {
     response.end();
 }
 
+staticServer = new static.Server('./');
 function requestHandler(request, response){
 
-    let url = urls[request.url];
-
-    if(url == undefined){
-        console.error("invalid request")
+    if(request.url.includes("static")){
+        staticServer.serve(request, response);
     }
     else{
-        let controller = views[url.controller]
-        return controller(request, response)
+        let url = urls[request.url];
+        
+        if(url == undefined){
+            console.error("invalid request")
+        }
+        else{
+            let controller = views[url.controller]
+            return controller(request, response)
+        }
     }
+    
 }
 
 http.createServer(requestHandler).listen(port, host);
