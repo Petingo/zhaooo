@@ -1,4 +1,12 @@
 # Develop Doc
+## 一開始
+``` bash
+git clone https://github.com/Petingo/zhaooo.git
+cd server
+npm i
+```
+
+
 ## mysql database
 
 引入 mysql-database 的 query，直接下 SQL 語句
