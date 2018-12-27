@@ -1,4 +1,4 @@
-const query = require('./mysql-database')
+const query = require('./database-mysql')
 
 function getName(){
     return "nnnnnname"
