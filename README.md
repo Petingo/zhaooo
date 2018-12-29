@@ -9,8 +9,6 @@ npm i
 
 ## mysql database
 
-引入 mysql-database 的 query，直接下 SQL 語句
-
 ``` javascript
 const query = require('./mysql-database').query
 async function test() {

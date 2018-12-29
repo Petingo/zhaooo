@@ -2,12 +2,8 @@ const nunjucks = require('nunjucks')
 const http = require('http')
 const static = require('node-static')
 
-var url = require('url');
-var util = require('util');
-var querystring = require('querystring');
-// var cookieParser = require('cookie-parser');
-// var http = require('http')
-var Cookies = require('cookies')
+
+const model = require('./model')
 
 const model = require('./model')
 const query = require('./database-mysql').query
@@ -58,37 +54,65 @@ urls['/post_article_form'] = {
     controller: 'post_article_form'
 }
 
-function htmlPage(response, fileName, data){
-    response.writeHead(200, {"Content-Type": "text/html"});
+urls['/register'] = {
+    method: 'get',
+    controller: 'register'
+}
+
+urls['/coin'] = {
+    method: 'get',
+    controller: 'coin'
+}
+
+urls['/test'] = {
+    method: 'get',
+    controller: 'test'
+}
+
+function htmlPage(response, fileName, data) {
+    response.writeHead(200, { "Content-Type": "text/html" });
     response.write(nunjucks.render(fileName, data));
     response.end();
 }
 
-views['index'] = function(request, response) {
-    console.log('index')
-    var keys = ['keyboard cat'] 
-    var cookies = new Cookies(request, response,{ keys: keys })
-    var lastVisit = cookies.get('LastVisit', { signed: true })
-    let data
-    if (!lastVisit || lastVisit == 'nologining') {
-        data = {
-            title: "index",
-            name: 'Welcome, first time visitor!'
-        }
-    } else {
-        data = {
-            title: "index",
-            name: cookies.get('LastVisit', { signed: true })
-        }
+
+views['test'] = function (request, response) {
+    console.log('test')
+
+    let data = {
+        title: "test"
     }
-    
-    // let data = {
-    //     title: "index",
-    //     name: cookies.get('LastVisit', { signed: true })
-    // }
-    htmlPage(response, "index.html", data)
+
+    htmlPage(response, "test.njk", data)
 }
-views['login'] = function(request, response) {
+
+views['index'] = function (request, response) {
+    console.log('index')
+
+    let timestamp = new Date();
+    let time = (timestamp.getMonth()+1) + '/' + (timestamp.getDate()) + ' ' + timestamp.getHours() + ':' + timestamp.getMinutes()
+
+    let data = {
+        articles: [
+            { title: "foo1", time: time, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi " },
+            { title: "foo2", time: time, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi " },
+            { title: "foo3", time: time, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi " },
+            { title: "foo4", time: time, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi " },
+            { title: "foo5", time: time, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi " },
+            { title: "foo6", time: time, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi " },
+            { title: "foo7", time: time, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi " },
+            { title: "foo8", time: time, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi " },
+            { title: "foo9", time: time, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi " },
+            { title: "foo10", time: time, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi " },
+            { title: "foo11", time: time, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi " },
+        ]
+    }
+
+    htmlPage(response, "index.njk", data)
+}
+
+views['login'] = function (request, response) {
+    console.log('login')
 
     console.log('login')
     let data = {
@@ -96,7 +120,7 @@ views['login'] = function(request, response) {
         message: "login page"
     }
 
-    htmlPage(response, "login.html", data)
+    htmlPage(response, "login.njk", data)
 }
 views['login_form'] = async function(request, response) {
 
@@ -266,30 +290,45 @@ views['post_article_form'] = async function (request, response) {
     });
 }
 
+views['register'] = function (request, response) {
+    console.log('register')
+    htmlPage(response, "register.njk")
+}
+
+views['coin'] = function (request, response) {
+    console.log('coin')
+
+    htmlPage(response, "coin.njk")
+}
+
+
 staticServer = new static.Server('./');
 
-function requestHandler(request, response){
+function requestHandler(request, response) {
+    try {
+        if (request.url.includes("static")) {
+            staticServer.serve(request, response);
+        }
+        else {
+            let url = urls[request.url]; // ffff.com/fuck
 
-    if(request.url.includes("static")){
-        staticServer.serve(request, response);
+            if (url == undefined) {
+                console.error("invalid request")
+            }
+            else {
+                let controller = url.controller
+                if (typeof (controller) == "string") {
+                    return views[url.controller](request, response)
+                }
+                else if (typeof (controller == "function")) {
+                    return controller(request, response)
+                }
+
+            }
+        }
     }
-    else{
-        let url = urls[request.url];
-        
-        if(url == undefined){
-            console.log(request.url)
-            console.error("invalid request")
-        }
-        else{
-            let controller = url.controller
-            if(typeof(controller) == "string"){
-                return views[url.controller](request, response)
-            }
-            else if(typeof(controller == "function")){
-                return controller(request, response)
-            }
-            
-        }
+    catch(e){
+        console.error(e);
     }
     
 }
