@@ -1,0 +1,17 @@
+{% extends "base.njk" %}
+
+{% block left_nav %}
+    <nav class="nav flex-column">
+        <a id="wall-link" class="nav-link" href="#">我ㄉ錢錢</a>
+        <a id="wall-link" class="nav-link" href="#">買兆幣</a>
+        <a id="wall-link" class="nav-link" href="#">買廣告</a>
+        
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <div >
+        <img src="/static/media/img/coins.svg" style="height: 60%">
+        <h2> 你有 {{ coin_amoount }} 個兆幣耶，太猛ㄌㄅ！！！</h2>
+    </div>
+{% endblock %}

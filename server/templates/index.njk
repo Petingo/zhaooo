@@ -1,0 +1,70 @@
+{% extends "base.njk" %}
+
+{% block left_nav %}
+    <nav class="nav flex-column">
+        <a id="wall-link" class="nav-link" href="#">動態牆</a>
+        <a id="class-board-link" class="nav-link" href="#">班級看板</a>
+        <p>
+            <a id="board-link" class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                最愛看版
+            </a>
+        </p>
+        <div class="collapse" id="collapseExample">
+            <a id="gossiping-link" class="nav-link" href="#">八卦</a>
+            <a id="sex-link" class="nav-link" href="#">西斯</a>
+            <a id="beauty-link" class="nav-link" href="#">表特</a>
+            <a id="cchat-link" class="nav-link" href="#">希洽</a>
+            <a id="pcshopping-link" class="nav-link" href="#">電蝦</a>
+        </div>
+
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+        發表廢文
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">發表廢文</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                        </div>
+                    </form>
+                    <div class="form-group form-check">
+                        <input type="checkbox" class="form-check-input" id="anonymous">
+                        <label class="form-check-label" for="exampleCheck1">匿名發表</label>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+                    <button type="button" id="submit-article" class="btn btn-primary" data-dismiss="modal">發射</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="height:100%;">
+        {% for item in articles %}
+            <div class="card" style="width: 100%;">
+                <div class="card-body">
+                    <h5 class="name">{{ item.title }}</h5>
+                    <h6 class="time mb-2 text-muted">{{ item.time }}</h6>
+                    <p class="content">{{ item.content }}</p>
+                    <a href="#" class="like">♡</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
