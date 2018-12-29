@@ -48,6 +48,16 @@ urls['/register_form'] = {
     controller: 'register_form'
 }
 
+urls['/post_article'] = {
+    method: 'get',
+    controller: 'post_article'
+}
+
+urls['/post_article_form'] = {
+    method: 'post',
+    controller: 'post_article_form'
+}
+
 function htmlPage(response, fileName, data){
     response.writeHead(200, {"Content-Type": "text/html"});
     response.write(nunjucks.render(fileName, data));
@@ -133,7 +143,7 @@ views['login_form'] = async function(request, response) {
         response.end();
     });
 }
-views['register'] = async function(request, response) {
+views['register'] = function(request, response) {
 
     console.log('register')
     let data = {
@@ -218,6 +228,42 @@ views['loggout'] = function(request, response) {
     cookies.set('LastVisit', 'nologining', { signed: true })
     response.writeHead(301, { "Location": "http://"+String(host)+":"+String(port)+"/" });
     response.end();
+}
+
+views['post_article'] = function (request, response) {
+
+    console.log('post_article')
+    let data = {
+        title: "post article",
+        message: "post article page"
+    }
+
+    htmlPage(response, "post_article.html", data)
+}
+
+views['post_article_form'] = async function (request, response) {
+    console.log('post_article')
+    var body = "";
+    request.on('data', function (chunk) {
+        body += chunk;
+    });
+    request.on('end', async function () {
+        body = querystring.parse(body);
+        await query(
+            `
+            CREATE TABLE IF NOT EXISTS post(
+                name    TEXT      NOT NULL,
+                time    TIMESTAMP NOT NULL,
+                content TEXT      NOT NULL,
+            )
+            `
+        )
+        await query(
+            `INSERT INTO post (name, time, content) VALUE ( ` + String(body.name) + `,` + body.time + ',' + String(body.content) + `)`
+        )
+        response.writeHead(301, { "Location": "http://" + String(host) + ":" + String(port) + "/" });
+        response.end();
+    });
 }
 
 staticServer = new static.Server('./');
