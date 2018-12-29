@@ -100,8 +100,10 @@ views['register'] = function (request, response) {
 
 views['coin'] = function (request, response) {
     console.log('coin')
-
-    htmlPage(response, "coin.njk")
+    let data = {
+        coin_amoount: 66666
+    }
+    htmlPage(response, "coin.njk", data)
 }
 
 
