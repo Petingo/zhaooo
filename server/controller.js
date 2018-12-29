@@ -1,11 +1,9 @@
 const nunjucks = require('nunjucks')
 const http = require('http')
 const static = require('node-static')
-
-
+const Cookies = require('cookies')
 const model = require('./model')
-
-const model = require('./model')
+const querystring = require('querystring')
 const query = require('./database-mysql').query
 
 const host = "127.0.0.1"
@@ -31,7 +29,7 @@ urls['/login'] = {
     controller: 'login'
 }
 urls['/login_form'] = {
-    method: 'get',
+    method: 'post',
     controller: 'login_form'
 }
 urls['/loggout'] = {
@@ -44,10 +42,12 @@ urls['/register_form'] = {
     controller: 'register_form'
 }
 
+/*
 urls['/post_article'] = {
     method: 'get',
     controller: 'post_article'
 }
+*/
 
 urls['/post_article_form'] = {
     method: 'post',
@@ -142,9 +142,9 @@ views['login_form'] = async function(request, response) {
         await query(
             `
             CREATE TABLE IF NOT EXISTS user(
-                id      INT     NOT NULL    AUTO_INCREMENT,
-                name    TEXT    NOT NULL,
-                password      INT     NOT NULL, 
+                id       INT     NOT NULL    AUTO_INCREMENT,
+                name     TEXT    NOT NULL,
+                password INT     NOT NULL, 
                 PRIMARY KEY (id)
             )
             `
@@ -175,7 +175,7 @@ views['register'] = function(request, response) {
         message: "register page"
     }
 
-    htmlPage(response, "register.html", data)
+    htmlPage(response, "register.njk", data)
 }
 views['register_form'] = async function(request, response) {
 
@@ -184,36 +184,40 @@ views['register_form'] = async function(request, response) {
         title: "register_form",
         message: "register page"
     }
-    var body = "";
+    let body = "";
     request.on('data', function (chunk) {
         body += chunk;
     });
     request.on('end', async function () {
         // 解析参数
         body = querystring.parse(body);
+        // console.log(body)
         // await query(
         //     `DROP TABLE user`
         // )
         await query(
             `
             CREATE TABLE IF NOT EXISTS user(
-                id      INT     NOT NULL    AUTO_INCREMENT,
-                name    TEXT    NOT NULL,
-                password      INT     NOT NULL, 
+                id       INT     NOT NULL    AUTO_INCREMENT,
+                name     TEXT    NOT NULL,
+                password INT     NOT NULL, 
                 PRIMARY KEY (id)
             )
             `
         )
         let res
         try { // statements to try
+            // console.log(body.username)
+            // console.log(body.password)
+            var block = [String(body.username), parseInt(String(body.password))]
             res = await query(
-                "SELECT * FROM user WHERE name = " + String(body.username) 
+                // "INSERT INTO user (`id`, `name`, `password`) VALUES (NULL, '" + String(body.username) + ',' + body.password + "')"
+                //"INSERT INTO `user` (`id`, `name`, `password`) VALUES (NULL, 'daveyu824', '123456')"
+                "INSERT INTO user (`id`, `name`, `password`) VALUES (NULL, ?, ?)", block
             )
         }
         catch (e) {
-            await query(
-                `INSERT INTO user ( name,password ) VALUE ( `+'"'+ String(body.username)+'"'+`,`+String(body.password)+ `)`
-            )
+            console.error(e)
         }
         console.log("yaaaaaa = "+String(res))
 
@@ -254,6 +258,7 @@ views['loggout'] = function(request, response) {
     response.end();
 }
 
+/*
 views['post_article'] = function (request, response) {
 
     console.log('post_article')
@@ -264,6 +269,7 @@ views['post_article'] = function (request, response) {
 
     htmlPage(response, "post_article.html", data)
 }
+*/
 
 views['post_article_form'] = async function (request, response) {
     console.log('post_article')

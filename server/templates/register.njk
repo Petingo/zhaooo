@@ -30,12 +30,12 @@
 </head>
 
 <body>
-    <form class="form-signin">
+    <form class="form-signin" action="register_form" method="post">
         <img class="mb-4" src="/static/media/img/logo.svg" alt="" width="72" height="72" style="display:block; margin:auto;">
         <h1 class="h3 mb-3 font-weight-normal" align="center">註冊</h1>
-        <input type="text" id="inputID" class="form-control" placeholder="學號" required autofocus>
-        <input type="email" id="inputEmail" class="form-control" placeholder="信箱地址">
-        <input type="password" id="inputPassword" class="form-control" placeholder="密碼" required>
+        <input type="text" name="username" class="form-control" placeholder="用戶名稱" required autofocus>
+        {# <input type="email" id="email" class="form-control" placeholder="信箱地址"> #}
+        <input type="password" name="password" class="form-control" placeholder="密碼" required>
         <p align="center" style="color: gray; font-size: 90%">點擊註冊即代表您同意<a href="#" style="color: gray">隱私政策與使用條款</a></p>
         <button class="btn btn-lg btn-primary btn-block" type="submit">註冊</button>
 
