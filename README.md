@@ -6,6 +6,7 @@ cd server
 npm i
 ```
 
+<a href="https://www.freepik.com/free-photos-vectors/love">Love vector created by Freepik</a>
 
 ## mysql database
 

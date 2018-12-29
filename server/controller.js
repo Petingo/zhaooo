@@ -89,10 +89,14 @@ views['test'] = function (request, response) {
 views['index'] = function (request, response) {
     console.log('index')
 
+    let keys = ['keyboard cat'] 
+    let cookies = new Cookies(request, response,{ keys: keys })
+    let lastVisit = cookies.get('LastVisit', { signed: true })
+
     let timestamp = new Date();
     let time = (timestamp.getMonth()+1) + '/' + (timestamp.getDate()) + ' ' + timestamp.getHours() + ':' + timestamp.getMinutes()
-
     let data = {
+        user_name: lastVisit,
         articles: [
             { title: "foo1", time: time, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi " },
             { title: "foo2", time: time, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi " },
