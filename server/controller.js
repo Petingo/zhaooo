@@ -48,6 +48,29 @@ urls['/post_article'] = {
     controller: 'post_article'
 }
 
+urls['/article_motion'] = {
+    method: 'post',
+    controller: async function (request, response) {
+        console.log('meow')
+        let body = "";
+        request.on('data', function (chunk) {
+            body += chunk;
+        });
+        request.on('end', async function () {
+            body = querystring.parse(body);
+            console.log(body);
+            if(body.action == '😍'){
+                console.log('love')
+                model.lovePost(body['post-id']);
+            }
+            else if(body.action == '😡'){
+                console.log('angry')
+                model.angryPost(body['post-id']);
+            }
+        });
+    }
+}
+
 urls['/register'] = {
     method: 'get',
     controller: 'register'
@@ -83,8 +106,8 @@ views['test'] = function (request, response) {
 views['index'] = async function (request, response) {
     console.log('index')
 
-    let keys = ['keyboard cat'] 
-    let cookies = new Cookies(request, response,{ keys: keys })
+    let keys = ['keyboard cat']
+    let cookies = new Cookies(request, response, { keys: keys })
     let lastVisit = cookies.get('LastVisit', { signed: true })
     let result = await model.listPost(lastVisit)
 
@@ -96,8 +119,22 @@ views['index'] = async function (request, response) {
         if (a.time > b.time) { return -1 }
         if (a.time < b.time) { return 1 }
     })
-    for (i = 0; i < 10; i++) {
-        data.articles.push({"id":result[i].name, "time":result[i].time, "content":result[i].content})
+
+    let counter = 0;
+    for (r in result) {
+        data.articles.push(
+            {
+                "id": r.id,
+                "name": r.name,
+                "time": r.time,
+                "content": r.content,
+                "love": r.love,
+                "angry": r.angry
+            })
+        counter++;
+        if (counter == 10) {
+            break;
+        }
     }
 
     htmlPage(response, "index.njk", data)
@@ -126,9 +163,8 @@ views['login_form'] = async function (request, response) {
     request.on('end', async function () {
         // 解析参数
         body = querystring.parse(body);
-        let res
-        res = await model.createUser()
-        
+        let res = await model.createUser()
+
         var keys = ['keyboard cat']
         var cookies = new Cookies(request, response, { keys: keys })
         valid = model.validateUser(body.username, body.password)
@@ -137,7 +173,7 @@ views['login_form'] = async function (request, response) {
             response.writeHead(301, { "Location": "http://" + String(host) + ":" + String(port) + "/" });
             response.end();
         }
-        else{
+        else {
             console.log(valid)
             response.writeHead(301, { "Location": "http://" + String(host) + ":" + String(port) + "/register" });
             response.end();
@@ -145,7 +181,7 @@ views['login_form'] = async function (request, response) {
 
     });
 }
-views['register'] = function(request, response) {
+views['register'] = function (request, response) {
 
     console.log('register')
     let data = {
@@ -155,7 +191,7 @@ views['register'] = function(request, response) {
 
     htmlPage(response, "register.njk", data)
 }
-views['register_form'] = async function(request, response) {
+views['register_form'] = async function (request, response) {
 
     console.log('register_form')
     let data = {
@@ -172,22 +208,22 @@ views['register_form'] = async function(request, response) {
 
         await model.createUser()
         let res
-        let success = model.addUser(body.username,body.password)
+        let success = model.addUser(body.username, body.password)
 
-        var keys = ['keyboard cat'] 
-        var cookies = new Cookies(request, response,{ keys: keys })
+        var keys = ['keyboard cat']
+        var cookies = new Cookies(request, response, { keys: keys })
         cookies.set('LastVisit', String(body.username), { signed: true })
-        response.writeHead(301, { "Location": "http://"+String(host)+":"+String(port)+"/" });
+        response.writeHead(301, { "Location": "http://" + String(host) + ":" + String(port) + "/" });
         response.end();
     });
 }
 
 views['logout'] = function (request, response) {
     console.log('logout')
-    let keys = ['keyboard cat'] 
-    let cookies = new Cookies(request, response,{ keys: keys })
+    let keys = ['keyboard cat']
+    let cookies = new Cookies(request, response, { keys: keys })
     cookies.set('LastVisit', 'nologining', { signed: true })
-    response.writeHead(301, { "Location": "http://"+String(host)+":"+String(port)+"/login" });
+    response.writeHead(301, { "Location": "http://" + String(host) + ":" + String(port) + "/login" });
     response.end();
 }
 
@@ -267,10 +303,10 @@ function requestHandler(request, response) {
             }
         }
     }
-    catch(e){
+    catch (e) {
         console.error(e);
     }
-    
+
 }
 http.createServer(requestHandler).listen(port, host);
 console.log("Server has started.");
