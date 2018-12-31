@@ -100,7 +100,7 @@
         {% for item in articles %}
             <div class="card mt-3" style="width: 100%;">
                 <div class="card-body">
-                    <h5 class="name">{{ item.id }}</h5>
+                    <span><img src="/static/media/img/avatar.svg" alt="Avatar" style="height: 2.5rem; margin-left: -5px; margin-bottom: 0.5rem" class="mr-2"><span class="name" style="font-size: 1.5rem; padding-top:0.5rem">{{ item.id }}</span></span>
                     <h6 class="time mb-2 text-muted">{{ item.time }}</h6>
                     <p class="content">{{ item.content }}</p>
 
