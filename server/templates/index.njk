@@ -103,7 +103,13 @@
                     <h5 class="name">{{ item.id }}</h5>
                     <h6 class="time mb-2 text-muted">{{ item.time }}</h6>
                     <p class="content">{{ item.content }}</p>
-                    <a href="#" class="like">♡</a>
+
+                    <input type="submit" value="😍" class="btn btn-mood"/>
+                    <span>{{ like_amount }}</span>
+                    <span style="margin: 0px 1rem;"> </span>
+                    <input type="submit" value="😡" class="btn btn-mood"/>
+                    <span>{{ angry_amount }}</span>
+                    {# <a href="#" class="like"></a> #}
                 </div>
             </div>
         {% endfor %}

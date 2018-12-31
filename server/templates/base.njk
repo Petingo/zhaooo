@@ -8,13 +8,13 @@
 
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-        <link rel="stylesheet" href="/static/css/main.css">
         <link rel="stylesheet" type="text/css" href="/static/css/theme-default.css"/>
+        <link rel="stylesheet" href="/static/css/main.css">
 
         <script>
             function changeCSS(cssFile, cssLinkIndex) {
 
-                var oldlink = document.getElementsByTagName("link").item(cssLinkIndex);
+                var oldlink = document.getElementsByTagName("link").item(1);
                 var newlink = document.createElement("link");
                 newlink.setAttribute("rel", "stylesheet");
                 newlink.setAttribute("type", "text/css");
@@ -53,13 +53,13 @@
                             變更主題
                         </button>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#" onclick="changeCSS('theme-default.css', 2);">原諒套餐</a>
+                            <a class="dropdown-item" href="#" onclick="changeCSS('theme-default.css', 1);">原諒套餐</a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#" onclick="changeCSS('theme-purple.css', 2);">紫衣軍團</a>
-                            <a class="dropdown-item" href="#" onclick="changeCSS('theme-gray.css', 2);">灰色人生</a>
-                            <a class="dropdown-item" href="#" onclick="changeCSS('theme-black.css', 2);">臭黑鮑魚</a>
-                            <a class="dropdown-item" href="#" onclick="changeCSS('theme-pink.css', 2);">哈囉凱蒂</a>
-                            <a class="dropdown-item" href="#" onclick="changeCSS('theme-darkgreen.css', 2);">墨綠柯粉</a>
+                            <a class="dropdown-item" href="#" onclick="changeCSS('theme-purple.css', 1);">紫衣軍團</a>
+                            <a class="dropdown-item" href="#" onclick="changeCSS('theme-gray.css', 1);">灰色人生</a>
+                            <a class="dropdown-item" href="#" onclick="changeCSS('theme-black.css', 1);">臭黑鮑魚</a>
+                            <a class="dropdown-item" href="#" onclick="changeCSS('theme-pink.css', 1);">哈囉凱蒂</a>
+                            <a class="dropdown-item" href="#" onclick="changeCSS('theme-darkgreen.css', 1);">墨綠柯粉</a>
                         </div>
                     </div>
                 </li>

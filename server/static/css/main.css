@@ -14,7 +14,6 @@
     font-size: 3.5vh;
 }
 
-
 .bd-sidebar {
     position: -webkit-sticky;
     position: sticky;
@@ -22,3 +21,19 @@
     z-index: 1000;
     height: calc(80vh);
 }
+
+.btn-mood{
+    font-size: 1.5rem;
+    text-align: center;
+    border-radius: 50%;
+    padding: 0px
+}
+
+.btn-mood:hover{
+    -webkit-animation:spin 0.2s linear infinite;
+    -moz-animation:spin 0.2s linear infinite;
+    animation:spin 0.2s linear infinite;
+}
+@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
