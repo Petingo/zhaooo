@@ -1,3 +1,4 @@
+/*
 const sql = require("mssql")
 
 const config = {
@@ -84,3 +85,4 @@ test()
 //         console.log(err)
 //     }
 // }
+*/

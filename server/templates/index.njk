@@ -52,6 +52,15 @@
 {% endblock %}
 
 {% block content %}
+    {# <script>
+        function PostArticleData(){
+            var formArticle = document.forms['article']
+            var timestamp = Date.now()
+            formArticle.timestamp.value = timestamp
+            console.log("fuck")
+        }
+    </script> #}
+
     <!-- Button trigger modal -->
     <button type="button" id="post-article" class="btn btn-warning" data-toggle="modal" data-target="#exampleModal">
         發廢文
@@ -67,22 +76,23 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
-                    <form>
+                <form id="article" action="post_article" method="post">
+                    <div class="modal-body">
                         <div class="form-group">
                             <textarea class="form-control" name="content" rows="3"></textarea>
+                            {# <input type="hidden" name="timestamp"> #}
                         </div>
-                    </form>
-                    <div class="form-group form-check">
-                        <input type="checkbox" class="form-check-input" id="anonymous">
-                        <label class="form-check-label" for="exampleCheck1">匿名發表</label>
+                        <div class="form-group form-check">
+                            <input type="checkbox" class="form-check-input" id="anonymous">
+                            <label class="form-check-label" for="exampleCheck1">匿名發表</label>
+                        </div>
                     </div>
-                </div>
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
-                    <button type="button" id="submit-article" class="btn btn-primary" data-dismiss="modal">發射</button>
-                </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+                        <button id="submit-article" class="btn btn-primary" type="submit">發射</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

@@ -32,9 +32,9 @@ urls['/login_form'] = {
     method: 'post',
     controller: 'login_form'
 }
-urls['/loggout'] = {
-    method: 'get',
-    controller: 'loggout'
+urls['/logout'] = {
+    method: 'post',
+    controller: 'logout'
 }
 
 urls['/register_form'] = {
@@ -42,16 +42,9 @@ urls['/register_form'] = {
     controller: 'register_form'
 }
 
-/*
 urls['/post_article'] = {
-    method: 'get',
-    controller: 'post_article'
-}
-*/
-
-urls['/post_article_form'] = {
     method: 'post',
-    controller: 'post_article_form'
+    controller: 'post_article'
 }
 
 urls['/register'] = {
@@ -116,8 +109,6 @@ views['index'] = function (request, response) {
 }
 
 views['login'] = function (request, response) {
-    console.log('login')
-
     console.log('login')
     let data = {
         title: "login",
@@ -255,12 +246,12 @@ views['register_form'] = async function(request, response) {
     });
 }
 
-views['loggout'] = function(request, response) {
-    console.log('loggout')
+views['logout'] = function (request, response) {
+    console.log('logout')
     var keys = ['keyboard cat'] 
     var cookies = new Cookies(request, response,{ keys: keys })
     cookies.set('LastVisit', 'nologining', { signed: true })
-    response.writeHead(301, { "Location": "http://"+String(host)+":"+String(port)+"/" });
+    response.writeHead(301, { "Location": "http://"+String(host)+":"+String(port)+"/login" });
     response.end();
 }
 
@@ -277,7 +268,7 @@ views['post_article'] = function (request, response) {
 }
 */
 
-views['post_article_form'] = async function (request, response) {
+views['post_article'] = async function (request, response) {
     console.log('post_article')
     var body = "";
     request.on('data', function (chunk) {
@@ -290,12 +281,18 @@ views['post_article_form'] = async function (request, response) {
             CREATE TABLE IF NOT EXISTS post(
                 name    TEXT      NOT NULL,
                 time    TIMESTAMP NOT NULL,
-                content TEXT      NOT NULL,
+                content TEXT      NOT NULL
             )
             `
         )
+        var datetime = new Date().toISOString().slice(0, 19).replace('T', ' ');
+        console.log(datetime)
+        var keys = ['keyboard cat']
+        var cookies = new Cookies(request, response, { keys: keys })
+        var username = cookies.get("LastVisit")
+        var block = [String(username), datetime, String(body.content)]
         await query(
-            `INSERT INTO post (name, time, content) VALUE ( ` + String(body.name) + `,` + body.time + ',' + String(body.content) + `)`
+            "INSERT INTO post (name, time, content) VALUE (?, ?, ?)", block
         )
         response.writeHead(301, { "Location": "http://" + String(host) + ":" + String(port) + "/" });
         response.end();
