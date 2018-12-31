@@ -96,7 +96,10 @@ let createPost = async function(){
             CREATE TABLE IF NOT EXISTS post(
                 name    TEXT      NOT NULL,
                 time    TIMESTAMP NOT NULL,
-                content TEXT      NOT NULL
+                content TEXT      NOT NULL,
+                love    INTEGER   DEFAULT 0,
+                angry   INTEGER   DEFAULT 0,
+                board   INTEGER   NOT NULL
             )
             `
         )
@@ -125,5 +128,5 @@ let listPost = async function(lastVisit){
         "SELECT * FROM post"
     )
 }
-
+createPost()
 module.exports = { query, createUser, addUser, validateUser, clearUser, createPost, addPost, listUser, listPost}
