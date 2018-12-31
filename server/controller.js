@@ -147,23 +147,12 @@ views['login_form'] = async function (request, response) {
         // 解析参数
         body = querystring.parse(body);
         let res
-<<<<<<< HEAD
         res = await model.createUser()
         
         var keys = ['keyboard cat']
         var cookies = new Cookies(request, response, { keys: keys })
         valid = model.validateUser(body.username, body.password)
         if (valid) {
-=======
-        let keys = ['keyboard cat']
-        let cookies = new Cookies(request, response, { keys: keys })
-
-        try { // statements to try
-            res = await query(
-                "SELECT * FROM user WHERE name = '" + String(body.username) + "' AND password = '" + String(body.password) + "'"
-            )
-            console.log('haha' + String(res))
->>>>>>> c73a8c479c7c966acd18beea98494668613ae27b
             cookies.set('LastVisit', String(body.username), { signed: true })
             response.writeHead(301, { "Location": "http://" + String(host) + ":" + String(port) + "/" });
             response.end();
@@ -200,38 +189,6 @@ views['register_form'] = async function(request, response) {
     request.on('end', async function () {
         // 解析参数
         body = querystring.parse(body);
-<<<<<<< HEAD
-=======
-        // console.log(body)
-        // await query(
-        //     `DROP TABLE user`
-        // )
-        await query(
-            `
-            CREATE TABLE IF NOT EXISTS user(
-                id       INT     NOT NULL    AUTO_INCREMENT,
-                name     TEXT    NOT NULL,
-                password INT     NOT NULL, 
-                PRIMARY KEY (id)
-            )
-            `
-        )
-        let res
-        try { // statements to try
-            // console.log(body.username)
-            // console.log(body.password)
-            let block = [String(body.username), parseInt(String(body.password))]
-            res = await query(
-                // "INSERT INTO user (`id`, `name`, `password`) VALUES (NULL, '" + String(body.username) + ',' + body.password + "')"
-                //"INSERT INTO `user` (`id`, `name`, `password`) VALUES (NULL, 'daveyu824', '123456')"
-                "INSERT INTO user (`id`, `name`, `password`) VALUES (NULL, ?, ?)", block
-            )
-        }
-        catch (e) {
-            console.error(e)
-        }
-        console.log("yaaaaaa = "+String(res))
->>>>>>> c73a8c479c7c966acd18beea98494668613ae27b
 
         await model.createUser()
         let res
@@ -243,19 +200,8 @@ views['register_form'] = async function(request, response) {
         console.log(res)
 
 
-<<<<<<< HEAD
         var keys = ['keyboard cat'] 
         var cookies = new Cookies(request, response,{ keys: keys })
-=======
-        let keys = ['keyboard cat'] 
- 
-        let cookies = new Cookies(request, response,{ keys: keys })
-         
-        // Get a cookie
-        // let lastVisit = cookies.get('LastVisit', { signed: true })
-                
-        // Set the cookie to a value
->>>>>>> c73a8c479c7c966acd18beea98494668613ae27b
         cookies.set('LastVisit', String(body.username), { signed: true })
         response.writeHead(301, { "Location": "http://"+String(host)+":"+String(port)+"/" });
         response.end();
@@ -292,7 +238,6 @@ views['post_article'] = async function (request, response) {
     });
     request.on('end', async function () {
         body = querystring.parse(body);
-<<<<<<< HEAD
         await model.createPost()
         // await query(
         //     `
@@ -314,26 +259,6 @@ views['post_article'] = async function (request, response) {
         // await query(
         //     "INSERT INTO post (name, time, content) VALUE (?, ?, ?)", block
         // )
-=======
-        await query(
-            `
-            CREATE TABLE IF NOT EXISTS post(
-                name    TEXT      NOT NULL,
-                time    TIMESTAMP NOT NULL,
-                content TEXT      NOT NULL
-            )
-            `
-        )
-        let datetime = new Date().toISOString().slice(0, 19).replace('T', ' ');
-        // console.log(datetime)
-        let keys = ['keyboard cat']
-        let cookies = new Cookies(request, response, { keys: keys })
-        let username = cookies.get("LastVisit")
-        let block = [String(username), datetime, String(body.content)]
-        await query(
-            "INSERT INTO post (name, time, content) VALUE (?, ?, ?)", block
-        )
->>>>>>> c73a8c479c7c966acd18beea98494668613ae27b
         response.writeHead(301, { "Location": "http://" + String(host) + ":" + String(port) + "/" });
         response.end();
     });
