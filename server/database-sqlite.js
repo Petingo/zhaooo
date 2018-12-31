@@ -16,6 +16,95 @@ const query = function(sql){
     // })
 }
 
+let createUser = async function(){
+    // query(
+    //     `DROP TABLE user`
+    // )
+    try{
+        await query(
+            `
+            CREATE TABLE IF NOT EXISTS user(
+                id      INTEGER PRIMARY KEY   AUTOINCREMENT,
+                name    TEXT    NOT NULL,
+                password INT NOT NULL
+            )
+            `
+        )
+    }
+    catch(e){
+        return console.error(e)
+    }
+    return true
+}
+
+let validateUser = async function(name, password){
+
+    try { // statements to try
+        await query(        
+            "SELECT * FROM user WHERE name = '" + String(name) + "' AND password = '" + String(password) + "'"
+        )
+    }
+    catch (e) {
+        return console.error(e)
+    }
+    return true
+    
+}
+
+let addUser = async function(name, password){
+    try { // statements to try
+        await query(
+            `INSERT INTO user ( name,password ) VALUES ( `+'"'+ String(name)+'"'+`,`+String(password)+ `)`
+        )
+    }
+    catch (e) {
+        return console.error(e)
+    }
+    return true
+
+}
+let listPost = async function(lastVisit){
+    return result =  await query(
+        "SELECT * FROM post"
+    )
+}
+let createPost = async function(){
+    try{
+        await query(
+            `
+            CREATE TABLE IF NOT EXISTS post(
+                name    TEXT      NOT NULL,
+                time    TIMESTAMP NOT NULL,
+                content TEXT      NOT NULL
+            )
+            `
+        )
+    }
+    catch(e){
+        return console.error(e)
+    }
+    return true
+}
+let addPost = async function(block){
+    try { // statements to try
+        let haha =             "INSERT INTO post (name, time, content) VALUES ("+ String(block[0]) + ", "+ String(block[1]) + ", "+ String(block[2]) + ")"
+
+        console.log(haha)
+        await query(
+            "INSERT INTO post (name, time, content) VALUES ('"+ String(block[0]) + "', '"+ String(block[1]) + "', '"+ String(block[2]) + "')"
+        )
+    }
+    catch (e) {
+        return console.error(e)
+    }
+    return true
+
+}
+let listUser = async function(){
+    return await query(
+        "SELECT * FROM user"
+    )
+}
 async function test() {
     let s = await query(`SELECT * FROM user`)
     console.log(s);
@@ -46,3 +135,5 @@ async function test() {
 }
 
 test()
+
+module.exports = { query, createUser, addUser, validateUser, createPost, addPost, listUser, listPost}

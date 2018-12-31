@@ -4,8 +4,8 @@ const static = require('node-static')
 const Cookies = require('cookies')
 // const model = require('./model')
 const querystring = require('querystring')
-const query = require('./database-mysql').query
-const model = require('./database-mysql')
+// const query = require('./database-mysql').query
+const model = require('./database-sqlite')
 
 const host = "127.0.0.1"
 const port = 8000
@@ -105,16 +105,23 @@ views['test'] = function (request, response) {
 
 views['index'] = async function (request, response) {
     console.log('index')
+<<<<<<< HEAD
 
     let keys = ['keyboard cat']
     let cookies = new Cookies(request, response, { keys: keys })
+=======
+    await model.createPost()
+    let keys = ['keyboard cat'] 
+    let cookies = new Cookies(request, response,{ keys: keys })
+>>>>>>> f9b39ba3fda0485289f53a3307d71ab1b29d16b1
     let lastVisit = cookies.get('LastVisit', { signed: true })
     let result = await model.listPost(lastVisit)
-
+    
     let data = {
         user_name: lastVisit,
-        articles: result
+        articles: []
     }
+<<<<<<< HEAD
     result = [].slice.call(result).sort(function (a, b) {
         if (a.time > b.time) { return -1 }
         if (a.time < b.time) { return 1 }
@@ -135,6 +142,19 @@ views['index'] = async function (request, response) {
         if (counter == 10) {
             break;
         }
+=======
+    try{
+        result = [].slice.call(result).sort(function (a, b) {
+            if (a.time > b.time) { return -1 }
+            if (a.time < b.time) { return 1 }
+        })
+        for (i = 0; i < 10; i++) {
+            data.articles.push({"id":result[i].name, "time":result[i].time, "content":result[i].content})
+        }
+    }
+    catch(e){
+
+>>>>>>> f9b39ba3fda0485289f53a3307d71ab1b29d16b1
     }
 
     htmlPage(response, "index.njk", data)
@@ -167,7 +187,7 @@ views['login_form'] = async function (request, response) {
 
         var keys = ['keyboard cat']
         var cookies = new Cookies(request, response, { keys: keys })
-        valid = model.validateUser(body.username, body.password)
+        valid = await model.validateUser(body.username, body.password)
         if (valid) {
             cookies.set('LastVisit', String(body.username), { signed: true })
             response.writeHead(301, { "Location": "http://" + String(host) + ":" + String(port) + "/" });
@@ -208,7 +228,11 @@ views['register_form'] = async function (request, response) {
 
         await model.createUser()
         let res
+<<<<<<< HEAD
         let success = model.addUser(body.username, body.password)
+=======
+        let success = await model.addUser(body.username,body.password)
+>>>>>>> f9b39ba3fda0485289f53a3307d71ab1b29d16b1
 
         var keys = ['keyboard cat']
         var cookies = new Cookies(request, response, { keys: keys })
