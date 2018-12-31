@@ -1,29 +1,60 @@
 {% extends "base.njk" %}
 
 {% block left_nav %}
-    <nav class="nav flex-column">
-        <a id="wall-link" class="nav-link" href="#">動態牆</a>
+    <div style="height:100%;">
+        <div class="card text-center" style="width: 100%;">
+            <ul class="list-group list-group-flush">
+                <li class="pt-2">
+                    <img src="/static/media/img/avatar.svg" alt="Avatar" style="width: 60%">
+                    <p> {{user_name}} </p>
+                </li>
+                <a id="wall-link" class="list-group-item" href="#">
+                    動態牆
+                </a>
+                <a id="class-link" class="list-group-item" href="#">
+                    班級看板
+                </a>
+            </ul>
+        </div>
+        <div class="card text-center mt-3" style="width: 100%;">
+            <div class="card-header">
+                熱門看版
+            </div>
+            <ul class="list-group list-group-flush">
+                <a id="gossiping-link" class="list-group-item" href="#">
+                    八卦
+                </a>
+                <a id="gossiping-link" class="list-group-item" href="#">
+                    西斯
+                </a>
+                <a id="gossiping-link" class="list-group-item" href="#">
+                    表特
+                </a>
+                <a id="gossiping-link" class="list-group-item" href="#">
+                    希洽
+                </a>
+                <a id="gossiping-link" class="list-group-item" href="#">
+                    電蝦
+                </a>
+            </ul>
+        </div>
+    </div>
+
+    {# <a id="wall-link" class="nav-link" href="#">動態牆</a>
         <a id="class-board-link" class="nav-link" href="#">班級看板</a>
         <p>
             <a id="board-link" class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
                 最愛看版
             </a>
         </p>
-        <div class="collapse" id="collapseExample">
-            <a id="gossiping-link" class="nav-link" href="#">八卦</a>
-            <a id="sex-link" class="nav-link" href="#">西斯</a>
-            <a id="beauty-link" class="nav-link" href="#">表特</a>
-            <a id="cchat-link" class="nav-link" href="#">希洽</a>
-            <a id="pcshopping-link" class="nav-link" href="#">電蝦</a>
-        </div>
+        <div class="collapse" id="collapseExample"></div> #}
 
-    </nav>
 {% endblock %}
 
 {% block content %}
     <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-        發表廢文
+    <button type="button" id="post-article" class="btn btn-warning" data-toggle="modal" data-target="#exampleModal">
+        發廢文
     </button>
 
     <!-- Modal -->
@@ -31,7 +62,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">發表廢文</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">發廢文</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -57,7 +88,7 @@
     </div>
     <div style="height:100%;">
         {% for item in articles %}
-            <div class="card" style="width: 100%;">
+            <div class="card mt-3" style="width: 100%;">
                 <div class="card-body">
                     <h5 class="name">{{ item.title }}</h5>
                     <h6 class="time mb-2 text-muted">{{ item.time }}</h6>
