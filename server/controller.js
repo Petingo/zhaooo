@@ -86,18 +86,18 @@ views['index'] = async function (request, response) {
     let keys = ['keyboard cat'] 
     let cookies = new Cookies(request, response,{ keys: keys })
     let lastVisit = cookies.get('LastVisit', { signed: true })
+    let result = await model.listPost(lastVisit)
+    // // let result = await query(
+    // //     "SELECT * FROM post"
+    // // )
 
-    let result = await query(
-        "SELECT * FROM post"
-    )
-
-    /*
-    let timestamp = new Date();
-    let time = (timestamp.getMonth()+1) + '/' + (timestamp.getDate()) + ' ' + timestamp.getHours() + ':' + timestamp.getMinutes()
-    */
+    // /*
+    // let timestamp = new Date();
+    // let time = (timestamp.getMonth()+1) + '/' + (timestamp.getDate()) + ' ' + timestamp.getHours() + ':' + timestamp.getMinutes()
+    // */
     let data = {
         user_name: lastVisit,
-        articles: [
+        articles: result
             /*
             { title: "foo1", time: time, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi " },
             { title: "foo2", time: time, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi " },
@@ -111,15 +111,17 @@ views['index'] = async function (request, response) {
             { title: "foo10", time: time, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi " },
             { title: "foo11", time: time, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi " }
             */
-        ]
+        // ]
     }
-    result.sort(function (a, b) {
+    result = [].slice.call(result).sort(function (a, b) {
         if (a.time > b.time) { return -1 }
         if (a.time < b.time) { return 1 }
     })
     for (i = 0; i < 10; i++) {
         data.articles.push({"id":result[i].name, "time":result[i].time, "content":result[i].content})
     }
+    console.log(data)
+    console.log("nnnnnnnnnnnnnnn")
     htmlPage(response, "index.njk", data)
 }
 
@@ -194,12 +196,6 @@ views['register_form'] = async function(request, response) {
         let res
         let success = model.addUser(body.username,body.password)
 
-        res = await query(
-            `SELECT * FROM user`
-        )
-        console.log(res)
-
-
         var keys = ['keyboard cat'] 
         var cookies = new Cookies(request, response,{ keys: keys })
         cookies.set('LastVisit', String(body.username), { signed: true })
@@ -239,15 +235,7 @@ views['post_article'] = async function (request, response) {
     request.on('end', async function () {
         body = querystring.parse(body);
         await model.createPost()
-        // await query(
-        //     `
-        //     CREATE TABLE IF NOT EXISTS post(
-        //         name    TEXT      NOT NULL,
-        //         time    TIMESTAMP NOT NULL,
-        //         content TEXT      NOT NULL
-        //     )
-        //     `
-        // )
+
         var datetime = new Date().toISOString().slice(0, 19).replace('T', ' ');
         console.log(datetime)
         var keys = ['keyboard cat']
@@ -255,10 +243,8 @@ views['post_article'] = async function (request, response) {
         var username = cookies.get("LastVisit")
         var block = [String(username), datetime, String(body.content)]
 
-        await model.addPost()
-        // await query(
-        //     "INSERT INTO post (name, time, content) VALUE (?, ?, ?)", block
-        // )
+        await model.addPost(block)
+
         response.writeHead(301, { "Location": "http://" + String(host) + ":" + String(port) + "/" });
         response.end();
     });

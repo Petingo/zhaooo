@@ -25,7 +25,7 @@ let query = function (sql, values) {
     })
 }
 
-let createUSER = async function(){
+let createUser = async function(){
     try{
         await query(
             `
@@ -57,7 +57,7 @@ let addUser = async function(name, password){
 
 }
 
-let validateUSER = async function(name, password){
+let validateUser = async function(name, password){
 
     try { // statements to try
         await query(        
@@ -71,7 +71,7 @@ let validateUSER = async function(name, password){
     
 }
 
-let clearUSER = async function(){
+let clearUser = async function(){
     try{
         await query(
             `DROP TABLE user`
@@ -81,6 +81,12 @@ let clearUSER = async function(){
         return console.error(e)
     }
     return true
+}
+
+let listUser = async function(){
+    return await query(
+        "SELECT * FROM user"
+    )
 }
 
 let createPost = async function(){
@@ -114,5 +120,25 @@ let addPost = async function(block){
 
 }
 
+let listPost = async function(lastVisit){
+    // let data = {
+    //     user_name: lastVisit,
+    //     articles: []
+    // }
+    result =  await query(
+        "SELECT * FROM post"
+    )
+    
+    // result = [].slice.call(result).sort(function (a, b) {
+    //     if (a.time > b.time) { return -1 }
+    //     if (a.time < b.time) { return 1 }
+    // })
 
-module.exports = { query, createUser, addUser, validateUser, clearUser, createPost, addPost}
+    // for (i = 0; i < 10; i++) {
+    //     data.articles.push({"id":result[i].name, "time":result[i].time, "content":result[i].content})
+    // }
+
+    return result
+}
+
+module.exports = { query, createUser, addUser, validateUser, clearUser, createPost, addPost, listUser, listPost}
