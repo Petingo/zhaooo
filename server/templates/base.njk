@@ -67,7 +67,11 @@
                     <a class="nav-link disabled" href="#"></a>
                 </li>
                 <li class="nav-item">
-                    <button type="button" class="btn btn-primary" id="signout" href="/login">登出</button>
+                    <form action="logout" method="post">
+                        {# <button type="button" class="btn btn-primary" name="logout" href="/login">登出</button> #}
+                        <input name="logout">
+                        <button class="btn btn-primary">登出</button>
+                    </form>
                 </li>
             </ul>
         </nav>
