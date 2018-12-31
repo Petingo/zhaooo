@@ -215,9 +215,10 @@ views['post_article'] = async function (request, response) {
         } else {
             var username = cookies.get("LastVisit")
         }
+        console.log(String(body.board))
         var block = [String(username), datetime, String(body.content)]
 
-        await model.addPost(block)
+        // await model.addPost(block)
 
         response.writeHead(301, { "Location": "http://" + String(host) + ":" + String(port) + "/" });
         response.end();
