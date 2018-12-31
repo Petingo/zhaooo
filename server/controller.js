@@ -120,12 +120,8 @@ views['index'] = async function (request, response) {
         if (a.time < b.time) { return 1 }
     })
 
-    console.log("fuck")
-    console.log(result)
-
     let counter = 0;
     for (r of result) {
-        console.log(r)
         data.articles.push(
             {
                 "id": r.id,

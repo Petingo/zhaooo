@@ -79,6 +79,7 @@
                     </button>
                 </div>
                 <form id="article" action="post_article" method="post">
+
                     <div class="modal-body">
                         <div class="form-group">
                             <textarea class="form-control" name="content" rows="3"></textarea>
@@ -88,6 +89,9 @@
                             <label class="form-check-label" for="exampleCheck1">匿名發表</label>
                         </div>
                     </div>
+                    
+                    {# 選看板用的 #}
+                    <input id="select-board" type="hidden" name="board">
 
                     <div class="modal-footer">
                         <button id="select-post-board" class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">八卦</button>
@@ -103,10 +107,11 @@
                                 $(".select-post-board-item").click(function () {
                                     $("#select-post-board").text($(this).text());
                                     $("#select-post-board").val($(this).text());
+                                    $("#select-board").val($(this).text());
                                 });
                             });
                         </script>
-                        {# <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button> #}
+                        {# <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button> #}
                         <button id="submit-article" class="btn btn-primary" type="submit">發射</button>
                     </div>
                 </form>
