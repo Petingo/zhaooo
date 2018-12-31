@@ -26,21 +26,8 @@
 
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-        <link rel="stylesheet" type="text/css" href="/static/css/theme-default.css"/>
+        <link rel="stylesheet" type="text/css" href="/static/css/theme-default.css" id="css-theme"/>
         <link rel="stylesheet" href="/static/css/main.css">
-
-        <script>
-            function changeCSS(cssFile, cssLinkIndex) {
-
-                var oldlink = document.getElementsByTagName("link").item(1);
-                var newlink = document.createElement("link");
-                newlink.setAttribute("rel", "stylesheet");
-                newlink.setAttribute("type", "text/css");
-                newlink.setAttribute("href", "/static/css/" + cssFile);
-
-                document.getElementsByTagName("head").item(0).replaceChild(newlink, oldlink);
-            }
-        </script>
 
         <!-- Optional JavaScript -->
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -77,13 +64,18 @@
                             變更主題
                         </button>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#" onclick="changeCSS('theme-default.css', 1);">原諒套餐</a>
+                            <a class="dropdown-item" href="#" onclick="changeTheme('theme-default.css');">原諒套餐</a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#" onclick="changeCSS('theme-purple.css', 1);">紫衣軍團</a>
-                            <a class="dropdown-item" href="#" onclick="changeCSS('theme-gray.css', 1);">灰色人生</a>
-                            <a class="dropdown-item" href="#" onclick="changeCSS('theme-black.css', 1);">臭黑鮑魚</a>
-                            <a class="dropdown-item" href="#" onclick="changeCSS('theme-pink.css', 1);">哈囉凱蒂</a>
-                            <a class="dropdown-item" href="#" onclick="changeCSS('theme-darkgreen.css', 1);">墨綠柯粉</a>
+                            <a class="dropdown-item" href="#" onclick="changeTheme('theme-purple.css');">紫衣軍團</a>
+                            <a class="dropdown-item" href="#" onclick="changeTheme('theme-gray.css');">灰色人生</a>
+                            <a class="dropdown-item" href="#" onclick="changeTheme('theme-black.css');">臭黑鮑魚</a>
+                            <a class="dropdown-item" href="#" onclick="changeTheme('theme-pink.css');">哈囉凱蒂</a>
+                            <a class="dropdown-item" href="#" onclick="changeTheme('theme-darkgreen.css');">墨綠柯粉</a>
+                            <script>
+                                function changeTheme(cssFile) {
+                                    $('#css-theme').attr('href', `/static/css/${cssFile}`)
+                                }
+                            </script>
                         </div>
                     </div>
                 </li>
@@ -93,7 +85,7 @@
                 <li class="nav-item">
                     <form action="logout" method="post">
                         {# <button type="button" class="btn btn-primary" name="logout" href="/login">登出</button> #}
-                        <input name="logout">
+                        <input name="logout" style="display: none;">
                         <button class="btn btn-primary">登出</button>
                     </form>
                 </li>
