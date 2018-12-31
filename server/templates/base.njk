@@ -6,23 +6,28 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+        <link rel="apple-touch-icon" sizes="57x57" href="/static/media/icon/apple-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="/static/media/icon/apple-icon-60x60.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/static/media/icon/apple-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="/static/media/icon/apple-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/static/media/icon/apple-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="/static/media/icon/apple-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="/static/media/icon/apple-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="/static/media/icon/apple-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="/static/media/icon/apple-icon-180x180.png">
+        <link rel="icon" type="image/png" sizes="192x192" href="/static/media/icon/android-icon-192x192.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/static/media/icon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="96x96" href="/static/media/icon/favicon-96x96.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/static/media/icon/favicon-16x16.png">
+        <link rel="manifest" href="/static/media/icon/manifest.json">
+        <meta name="msapplication-TileColor" content="#ffffff">
+        <meta name="msapplication-TileImage" content="/static/media/icon/ms-icon-144x144.png">
+        <meta name="theme-color" content="#ffffff">
+
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-        <link rel="stylesheet" type="text/css" href="/static/css/theme-default.css"/>
+        <link rel="stylesheet" type="text/css" href="/static/css/theme-default.css" id="css-theme"/>
         <link rel="stylesheet" href="/static/css/main.css">
-
-        <script>
-            function changeCSS(cssFile, cssLinkIndex) {
-
-                var oldlink = document.getElementsByTagName("link").item(1);
-                var newlink = document.createElement("link");
-                newlink.setAttribute("rel", "stylesheet");
-                newlink.setAttribute("type", "text/css");
-                newlink.setAttribute("href", "/static/css/" + cssFile);
-
-                document.getElementsByTagName("head").item(0).replaceChild(newlink, oldlink);
-            }
-        </script>
 
         <!-- Optional JavaScript -->
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -30,14 +35,14 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
 
-        <title>{{ title }}</title>
+        <title>Zhaooo - 最容易約炮的論壇</title>
 
         {% block head %}{% endblock %}
 
     </head>
 
     <body>
-
+        <iframe name="hiddenFrame" width="0" height="0" border="0" style="display: none;"></iframe>
         <nav class="navbar navbar-light sticky-top bg-primary">
             <a class="navbar-brand" href="/">
                 <img src="/static/media/img/logo-haooo.svg" height="48" alt="">
@@ -59,13 +64,18 @@
                             變更主題
                         </button>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#" onclick="changeCSS('theme-default.css', 1);">原諒套餐</a>
+                            <a class="dropdown-item" href="#" onclick="changeTheme('theme-default.css');">原諒套餐</a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#" onclick="changeCSS('theme-purple.css', 1);">紫衣軍團</a>
-                            <a class="dropdown-item" href="#" onclick="changeCSS('theme-gray.css', 1);">灰色人生</a>
-                            <a class="dropdown-item" href="#" onclick="changeCSS('theme-black.css', 1);">臭黑鮑魚</a>
-                            <a class="dropdown-item" href="#" onclick="changeCSS('theme-pink.css', 1);">哈囉凱蒂</a>
-                            <a class="dropdown-item" href="#" onclick="changeCSS('theme-darkgreen.css', 1);">墨綠柯粉</a>
+                            <a class="dropdown-item" href="#" onclick="changeTheme('theme-purple.css');">紫衣軍團</a>
+                            <a class="dropdown-item" href="#" onclick="changeTheme('theme-gray.css');">灰色人生</a>
+                            <a class="dropdown-item" href="#" onclick="changeTheme('theme-black.css');">臭黑鮑魚</a>
+                            <a class="dropdown-item" href="#" onclick="changeTheme('theme-pink.css');">哈囉凱蒂</a>
+                            <a class="dropdown-item" href="#" onclick="changeTheme('theme-darkgreen.css');">墨綠柯粉</a>
+                            <script>
+                                function changeTheme(cssFile) {
+                                    $('#css-theme').attr('href', `/static/css/${cssFile}`)
+                                }
+                            </script>
                         </div>
                     </div>
                 </li>
@@ -75,7 +85,7 @@
                 <li class="nav-item">
                     <form action="logout" method="post">
                         {# <button type="button" class="btn btn-primary" name="logout" href="/login">登出</button> #}
-                        <input name="logout">
+                        <input name="logout" style="display: none;">
                         <button class="btn btn-primary">登出</button>
                     </form>
                 </li>

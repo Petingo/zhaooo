@@ -79,21 +79,22 @@
                     </button>
                 </div>
                 <form id="article" action="post_article" method="post">
+
                     <div class="modal-body">
                         <div class="form-group">
                             <textarea class="form-control" name="content" rows="3"></textarea>
-                            {# <input type="hidden" name="timestamp"> #}
                         </div>
                         <div class="form-group form-check" style="margin-bottom: 0px">
                             <input type="checkbox" class="form-check-input" name="anonymous">
                             <label class="form-check-label" for="exampleCheck1">匿名發表</label>
                         </div>
                     </div>
+                    
+                    {# 選看板用的 #}
+                    <input id="select-board" type="hidden" name="board">
 
                     <div class="modal-footer">
-                        <button id="select-post-board" class="btn btn-info dropdown-toggle" type="button" name="board" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            八卦
-                        </button>
+                        <button id="select-post-board" class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">八卦</button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <a class="dropdown-item select-post-board-item" href="#">八卦</a>
                             <a class="dropdown-item select-post-board-item" href="#">西斯</a>
@@ -104,15 +105,13 @@
                         <script>
                             $(function () {
                                 $(".select-post-board-item").click(function () {
-                                    console.log(this)
-                                    console.log($("#select-post-board").text())
-                                    console.log($("#select-post-board").val())
                                     $("#select-post-board").text($(this).text());
                                     $("#select-post-board").val($(this).text());
+                                    $("#select-board").val($(this).text());
                                 });
                             });
                         </script>
-                        {# <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button> #}
+                        {# <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button> #}
                         <button id="submit-article" class="btn btn-primary" type="submit">發射</button>
                     </div>
                 </form>
@@ -124,18 +123,41 @@
             <div class="card mt-3" style="width: 100%;">
                 <div class="card-body">
                     <span><img src="/static/media/img/avatar.svg" alt="Avatar" style="height: 2.5rem; margin-left: -5px; margin-bottom: 0.5rem" class="mr-2">
-                        <span class="name" style="font-size: 1.5rem; padding-top:0.5rem">{{ item.id }}</span></span>
+                        <span class="name" style="font-size: 1.5rem; padding-top:0.5rem">{{ item.name }}</span></span>
                     <h6 class="time mb-2 text-muted">{{ item.time }}</h6>
                     <p class="content">{{ item.content }}</p>
 
-                    <input type="submit" value="😍" class="btn btn-mood"/>
-                    <span>{{ like_amount }}</span>
-                    <span style="margin: 0px 1rem;"></span>
-                    <input type="submit" value="😡" class="btn btn-mood"/>
-                    <span>{{ angry_amount }}</span>
+                    <form id="article" action="article_motion" method="post" target="hiddenFrame">
+                        <input type="hidden" name="post-id" value="{{item.id}}">
+
+                        <input type="submit" value="😍" id="{{item.id}}" class="btn btn-mood btn-mood-love" name="action"/>
+                        <span id="love-amount-{{item.id}}" class="span-mood-love">{{ item.love }}</span>
+
+                        <span style="margin: 0px 1rem;"></span>
+
+                        <input type="submit" value="😡" id="{{item.id}}" class="btn btn-mood btn-mood-angry" name="action"/>
+                        <span id="angry-amount-{{item.id}}" class="span-mood-angry">{{ item.angry }}</span>
+
+                    </form>
                     {# <a href="#" class="like"></a> #}
                 </div>
             </div>
         {% endfor %}
+        <script>
+            $(function () {
+                $(".btn-mood").click(function () {
+                    console.log(this)
+                    let id = $(this).attr('id')
+                    let classes = $(this).attr('class')
+                    if (classes.indexOf('angry') > -1) {
+                        let showText = $("#angry-amount-" + id)
+                        showText.text(parseInt(showText.text()) + 1)
+                    } else if (classes.indexOf('love') > -1) {
+                        let showText = $("#love-amount-" + id)
+                        showText.text(parseInt(showText.text()) + 1)
+                    }
+                });
+            });
+        </script>
     </div>
 {% endblock %}

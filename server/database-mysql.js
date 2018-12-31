@@ -25,8 +25,8 @@ let query = function (sql, values) {
     })
 }
 
-let createUser = async function(){
-    try{
+let createUser = async function () {
+    try {
         await query(
             `
             CREATE TABLE IF NOT EXISTS user(
@@ -38,16 +38,16 @@ let createUser = async function(){
             `
         )
     }
-    catch(e){
+    catch (e) {
         return console.error(e)
     }
     return true
 }
 
-let addUser = async function(name, password){
+let addUser = async function (name, password) {
     try { // statements to try
         await query(
-            `INSERT INTO user ( name,password ) VALUE ( `+'"'+ String(name)+'"'+`,`+String(password)+ `)`
+            `INSERT INTO user ( name,password ) VALUE ( ` + '"' + String(name) + '"' + `,` + String(password) + `)`
         )
     }
     catch (e) {
@@ -57,10 +57,10 @@ let addUser = async function(name, password){
 
 }
 
-let validateUser = async function(name, password){
+let validateUser = async function (name, password) {
 
     try { // statements to try
-        await query(        
+        await query(
             "SELECT * FROM user WHERE name = '" + String(name) + "' AND password = '" + String(password) + "'"
         )
     }
@@ -68,49 +68,51 @@ let validateUser = async function(name, password){
         return console.error(e)
     }
     return true
-    
+
 }
 
-let clearUser = async function(){
-    try{
+let clearUser = async function () {
+    try {
         await query(
             `DROP TABLE user`
         )
     }
-    catch(e){
+    catch (e) {
         return console.error(e)
     }
     return true
 }
 
-let listUser = async function(){
+let listUser = async function () {
     return await query(
         "SELECT * FROM user"
     )
 }
 
-let createPost = async function(){
-    try{
+let createPost = async function () {
+    try {
         await query(
             `
             CREATE TABLE IF NOT EXISTS post(
+                id      INT       NOT NULL    AUTO_INCREMENT,
                 name    TEXT      NOT NULL,
                 time    TIMESTAMP NOT NULL,
                 content TEXT      NOT NULL,
                 love    INTEGER   DEFAULT 0,
                 angry   INTEGER   DEFAULT 0,
-                board   INTEGER   NOT NULL
+                board   TEXT,
+                PRIMARY KEY (id)
             )
             `
         )
     }
-    catch(e){
+    catch (e) {
         return console.error(e)
     }
     return true
 }
 
-let addPost = async function(block){
+let addPost = async function (block) {
     try { // statements to try
         await query(
             "INSERT INTO post (name, time, content) VALUE (?, ?, ?)", block
@@ -120,13 +122,37 @@ let addPost = async function(block){
         return console.error(e)
     }
     return true
-
 }
 
-let listPost = async function(lastVisit){
-    return result =  await query(
+let listPost = async function (lastVisit) {
+    return result = await query(
         "SELECT * FROM post"
     )
 }
+
+let lovePost = async function (postId) {
+    try { // statements to try
+        await query(
+            `UPDATE post SET love = love + 1 WHERE id = ${postId}`
+        )
+    }
+    catch (e) {
+        return console.error(e)
+    }
+    return true
+}
+
+let angryPost = async function (postId) {
+    try { // statements to try
+        await query(
+            `UPDATE post SET angry = angry + 1 WHERE id = ${postId}`
+        )
+    }
+    catch (e) {
+        return console.error(e)
+    }
+    return true
+}
+
 createPost()
-module.exports = { query, createUser, addUser, validateUser, clearUser, createPost, addPost, listUser, listPost}
+module.exports = { query, createUser, addUser, validateUser, clearUser, createPost, addPost, listUser, listPost, lovePost, angryPost }
