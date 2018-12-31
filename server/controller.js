@@ -90,13 +90,18 @@ views['index'] = async function (request, response) {
 
     let data = {
         user_name: lastVisit,
-        articles: result
+        articles: []
     }
     result = [].slice.call(result).sort(function (a, b) {
         if (a.time > b.time) { return -1 }
         if (a.time < b.time) { return 1 }
     })
-    for (i = 0; i < 10; i++) {
+    if (result.length >= 10) {
+        var limit = 10
+    } else {
+        var limit = result.length
+    }
+    for (i = 0; i < limit; i++) {
         data.articles.push({"id":result[i].name, "time":result[i].time, "content":result[i].content})
     }
 
@@ -202,10 +207,14 @@ views['post_article'] = async function (request, response) {
         await model.createPost()
 
         var datetime = new Date().toISOString().slice(0, 19).replace('T', ' ');
-        console.log(datetime)
         var keys = ['keyboard cat']
         var cookies = new Cookies(request, response, { keys: keys })
-        var username = cookies.get("LastVisit")
+        if (body.anonymous == "on") {
+            var username = "匿名"
+            // console.log("anonymous")
+        } else {
+            var username = cookies.get("LastVisit")
+        }
         var block = [String(username), datetime, String(body.content)]
 
         await model.addPost(block)
