@@ -121,24 +121,9 @@ let addPost = async function(block){
 }
 
 let listPost = async function(lastVisit){
-    // let data = {
-    //     user_name: lastVisit,
-    //     articles: []
-    // }
-    result =  await query(
+    return result =  await query(
         "SELECT * FROM post"
     )
-    
-    // result = [].slice.call(result).sort(function (a, b) {
-    //     if (a.time > b.time) { return -1 }
-    //     if (a.time < b.time) { return 1 }
-    // })
-
-    // for (i = 0; i < 10; i++) {
-    //     data.articles.push({"id":result[i].name, "time":result[i].time, "content":result[i].content})
-    // }
-
-    return result
 }
 
 module.exports = { query, createUser, addUser, validateUser, clearUser, createPost, addPost, listUser, listPost}
