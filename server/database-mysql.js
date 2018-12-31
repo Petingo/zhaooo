@@ -154,5 +154,28 @@ let angryPost = async function (postId) {
     return true
 }
 
+
+let applyNewBoard = async function(block){
+    try { // statements to try
+        await query(
+            `
+            CREATE TABLE IF NOT EXISTS new_board_application(
+                id          INT     NOT NULL    AUTO_INCREMENT,
+                name        TEXT    NOT NULL,
+                reason      TEXT,
+                username    TEXT    NOT NULL,
+                PRIMARY KEY (id)
+            )`
+        )
+        await query(
+            `INSERT INTO new_board_application (name, reason, username) VALUE (?, ?, ?)`, block
+        )
+    }
+    catch (e) {
+        return console.error(e)
+    }
+    return true
+}
+
 createPost()
-module.exports = { query, createUser, addUser, validateUser, clearUser, createPost, addPost, listUser, listPost, lovePost, angryPost }
+module.exports = { query, createUser, addUser, validateUser, clearUser, createPost, addPost, listUser, listPost, lovePost, angryPost, applyNewBoard }

@@ -50,7 +50,6 @@ urls['/post_article'] = {
 urls['/article_motion'] = {
     method: 'post',
     controller: async function (request, response) {
-        console.log('meow')
         let body = "";
         request.on('data', function (chunk) {
             body += chunk;
@@ -58,14 +57,34 @@ urls['/article_motion'] = {
         request.on('end', async function () {
             body = querystring.parse(body);
             console.log(body);
-            if(body.action == '😍'){
+            if (body.action == '😍') {
                 console.log('love')
                 model.lovePost(body['post-id']);
             }
-            else if(body.action == '😡'){
+            else if (body.action == '😡') {
                 console.log('angry')
                 model.angryPost(body['post-id']);
             }
+        });
+    }
+}
+
+urls['/new_board'] = {
+    method: 'post',
+    controller: async function (request, response) {
+        let body = "";
+        request.on('data', function (chunk) {
+            body += chunk;
+        });
+        request.on('end', async function () {
+            body = querystring.parse(body);
+            
+            var keys = ['keyboard cat']
+            var cookies = new Cookies(request, response, { keys: keys })
+            var username = cookies.get("LastVisit")
+            var block = [body.name, body.reason, String(username)]
+            console.log(block);
+            model.applyNewBoard(block)
         });
     }
 }
@@ -105,11 +124,11 @@ views['test'] = function (request, response) {
 views['index'] = async function (request, response) {
     console.log('index')
     await model.createPost()
-    let keys = ['keyboard cat'] 
-    let cookies = new Cookies(request, response,{ keys: keys })
+    let keys = ['keyboard cat']
+    let cookies = new Cookies(request, response, { keys: keys })
     let lastVisit = cookies.get('LastVisit', { signed: true })
     let result = await model.listPost(lastVisit)
-    
+
     let data = {
         user_name: lastVisit,
         articles: []
@@ -208,7 +227,7 @@ views['register_form'] = async function (request, response) {
 
         await model.createUser()
         let res
-        let success = await model.addUser(body.username,body.password)
+        let success = await model.addUser(body.username, body.password)
 
         var keys = ['keyboard cat']
         var cookies = new Cookies(request, response, { keys: keys })

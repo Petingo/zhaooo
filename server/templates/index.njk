@@ -1,7 +1,7 @@
 {% extends "base.njk" %}
 
 {% block left_nav %}
-    <div style="height:100%;">
+    <div class="text-center" style="height:100%;">
         <div class="card text-center" style="width: 100%;">
             <ul class="list-group list-group-flush">
                 <li class="pt-2">
@@ -18,9 +18,9 @@
                 </a>
             </ul>
         </div>
-        <div class="card text-center mt-3" style="width: 100%;">
+        <div class="card text-center mt-3 mb-2 " style="width: 100%;">
             <div class="card-header">
-                熱門看版
+                分類看版
             </div>
             <ul class="list-group list-group-flush">
                 <a id="gossiping-link" class="list-group-item" href="#">
@@ -40,20 +40,15 @@
                 </a>
             </ul>
         </div>
+        <a id="post-article" href="#" class="text-white" data-toggle="modal" data-target="#new-board-modal">
+            申請新看版
+        </a>
     </div>
-
-    {# <a id="wall-link" class="nav-link" href="#">動態牆</a>
-        <a id="class-board-link" class="nav-link" href="#">班級看板</a>
-        <p>
-            <a id="board-link" class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-                最愛看版
-            </a>
-        </p>
-        <div class="collapse" id="collapseExample"></div> #}
 
 {% endblock %}
 
 {% block content %}
+
     {# <script>
         function PostArticleData(){
             var formArticle = document.forms['article']
@@ -82,19 +77,19 @@
 
                     <div class="modal-body">
                         <div class="form-group">
-                            <textarea class="form-control" name="content" rows="3"></textarea>
+                            <textarea class="form-control" name="content" rows="5"></textarea>
                         </div>
                         <div class="form-group form-check" style="margin-bottom: 0px">
                             <input type="checkbox" class="form-check-input" id="anonymous">
                             <label class="form-check-label" for="exampleCheck1">匿名發表</label>
                         </div>
                     </div>
-                    
+
                     {# 選看板用的 #}
                     <input id="select-board" type="hidden" name="board">
 
                     <div class="modal-footer">
-                        <button id="select-post-board" class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">八卦</button>
+                        <button id="select-post-board" class="btn btn-info dropdown-toggle dropdown-menu-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">八卦</button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <a class="dropdown-item select-post-board-item" href="#">八卦</a>
                             <a class="dropdown-item select-post-board-item" href="#">西斯</a>
@@ -112,12 +107,57 @@
                             });
                         </script>
                         {# <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button> #}
-                        <button id="submit-article" class="btn btn-primary" type="submit">發射</button>
+                        <button id="submit-article" class="btn btn-primary btn-submit" type="submit">發射</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="new-board-modal" tabindex="-1" role="dialog" aria-labelledby="newBoardModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newBoardModalLabel">申請新看板</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="new-board-form" action="new_board" method="post" target="hiddenFrame">
+
+                    <div class="modal-body">
+                        <input type="text" name="name" id="new-board-name" class="form-control" placeholder="看版名稱" required="required" autofocus="autofocus">
+                        <textarea class="form-control mt-2" name="reason" rows="5" placeholder="申請事由"></textarea>
+                    </div>
+
+                    {# 選看板用的 #}
+                    <input id="username" type="hidden" name="username">
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                        <button id="new-board-submit" class="btn btn-primary btn-submit" type="submit">送出</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $('#new-board-submit').on("click", function (event) {
+            if ($('#new-board-name').val() == '') {
+                alert("啊你不打版名是要申請三小");
+            } else {
+                $.post("new_board", $("#new-board-form").serialize());
+                $("#new-board-form")[0].reset()
+                event.preventDefault();
+                $('.modal').modal('hide');
+
+                alert("已經收到申請囉，請靜候佳音！");
+            }
+        });
+    </script>
+
     <div style="height:100%;">
         {% for item in articles %}
             <div class="card mt-3" style="width: 100%;">
