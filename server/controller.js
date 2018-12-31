@@ -215,7 +215,7 @@ views['post_article'] = async function (request, response) {
         } else {
             var username = cookies.get("LastVisit")
         }
-        console.log(String(body.board))
+        // console.log(String(body.board))
         var block = [String(username), datetime, String(body.content)]
 
         // await model.addPost(block)
