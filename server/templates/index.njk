@@ -6,7 +6,9 @@
             <ul class="list-group list-group-flush">
                 <li class="pt-2">
                     <img src="/static/media/img/avatar.svg" alt="Avatar" style="width: 60%">
-                    <p> {{user_name}} </p>
+                    <p>
+                        {{user_name}}
+                    </p>
                 </li>
                 <a id="wall-link" class="list-group-item" href="#">
                     動態牆
@@ -82,14 +84,35 @@
                             <textarea class="form-control" name="content" rows="3"></textarea>
                             {# <input type="hidden" name="timestamp"> #}
                         </div>
-                        <div class="form-group form-check">
+                        <div class="form-group form-check" style="margin-bottom: 0px">
                             <input type="checkbox" class="form-check-input" id="anonymous">
                             <label class="form-check-label" for="exampleCheck1">匿名發表</label>
                         </div>
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+                        <button id="select-post-board" class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            八卦
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item select-post-board-item" href="#">八卦</a>
+                            <a class="dropdown-item select-post-board-item" href="#">西斯</a>
+                            <a class="dropdown-item select-post-board-item" href="#">告白</a>
+                            <a class="dropdown-item select-post-board-item" href="#">希洽</a>
+                            <a class="dropdown-item select-post-board-item" href="#">電蝦</a>
+                        </div>
+                        <script>
+                            $(function () {
+                                $(".select-post-board-item").click(function () {
+                                    console.log(this)
+                                    console.log($("#select-post-board").text())
+                                    console.log($("#select-post-board").val())
+                                    $("#select-post-board").text($(this).text());
+                                    $("#select-post-board").val($(this).text());
+                                });
+                            });
+                        </script>
+                        {# <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button> #}
                         <button id="submit-article" class="btn btn-primary" type="submit">發射</button>
                     </div>
                 </form>
@@ -100,13 +123,14 @@
         {% for item in articles %}
             <div class="card mt-3" style="width: 100%;">
                 <div class="card-body">
-                    <span><img src="/static/media/img/avatar.svg" alt="Avatar" style="height: 2.5rem; margin-left: -5px; margin-bottom: 0.5rem" class="mr-2"><span class="name" style="font-size: 1.5rem; padding-top:0.5rem">{{ item.id }}</span></span>
+                    <span><img src="/static/media/img/avatar.svg" alt="Avatar" style="height: 2.5rem; margin-left: -5px; margin-bottom: 0.5rem" class="mr-2">
+                        <span class="name" style="font-size: 1.5rem; padding-top:0.5rem">{{ item.id }}</span></span>
                     <h6 class="time mb-2 text-muted">{{ item.time }}</h6>
                     <p class="content">{{ item.content }}</p>
 
                     <input type="submit" value="😍" class="btn btn-mood"/>
                     <span>{{ like_amount }}</span>
-                    <span style="margin: 0px 1rem;"> </span>
+                    <span style="margin: 0px 1rem;"></span>
                     <input type="submit" value="😡" class="btn btn-mood"/>
                     <span>{{ angry_amount }}</span>
                     {# <a href="#" class="like"></a> #}
