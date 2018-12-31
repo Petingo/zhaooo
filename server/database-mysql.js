@@ -115,7 +115,7 @@ let createPost = async function () {
 let addPost = async function (block) {
     try { // statements to try
         await query(
-            "INSERT INTO post (name, time, content) VALUE (?, ?, ?)", block
+            "INSERT INTO post (name, time, content, board) VALUE (?, ?, ?, ?)", block
         )
     }
     catch (e) {
@@ -127,6 +127,12 @@ let addPost = async function (block) {
 let listPost = async function (lastVisit) {
     return result = await query(
         "SELECT * FROM post"
+    )
+}
+
+let listSpecificPost = async function (board) {
+    return result = await query(
+        `SELECT * FROM post WHERE board = "${board}"`
     )
 }
 
@@ -155,4 +161,4 @@ let angryPost = async function (postId) {
 }
 
 createPost()
-module.exports = { query, createUser, addUser, validateUser, clearUser, createPost, addPost, listUser, listPost, lovePost, angryPost }
+module.exports = { query, createUser, addUser, validateUser, clearUser, createPost, addPost, listUser, listPost, listSpecificPost, lovePost, angryPost }
