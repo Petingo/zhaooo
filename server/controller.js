@@ -2,9 +2,10 @@ const nunjucks = require('nunjucks')
 const http = require('http')
 const static = require('node-static')
 const Cookies = require('cookies')
-const model = require('./model')
+// const model = require('./model')
 const querystring = require('querystring')
 const query = require('./database-mysql').query
+const model = require('./database-mysql')
 
 const host = "127.0.0.1"
 const port = 8000
@@ -131,33 +132,19 @@ views['login_form'] = async function (request, response) {
     request.on('end', async function () {
         // 解析参数
         body = querystring.parse(body);
-        // await query(
-        //     DROP TABLE user
-        // )
-        await query(
-            `
-            CREATE TABLE IF NOT EXISTS user(
-                id       INT     NOT NULL    AUTO_INCREMENT,
-                name     TEXT    NOT NULL,
-                password INT     NOT NULL, 
-                PRIMARY KEY (id)
-            )
-            `
-        )
         let res
+        res = await model.createUser()
+        
         var keys = ['keyboard cat']
         var cookies = new Cookies(request, response, { keys: keys })
-
-        try { // statements to try
-            res = await query(
-                "SELECT * FROM user WHERE name = '" + String(body.username) + "' AND password = '" + String(body.password) + "'"
-            )
-            console.log('haha' + String(res))
+        valid = model.validateUser(body.username, body.password)
+        if (valid) {
             cookies.set('LastVisit', String(body.username), { signed: true })
             response.writeHead(301, { "Location": "http://" + String(host) + ":" + String(port) + "/" });
             response.end();
         }
-        catch (e) {
+        else{
+            console.log(valid)
             response.writeHead(301, { "Location": "http://" + String(host) + ":" + String(port) + "/register" });
             response.end();
         }
@@ -188,36 +175,10 @@ views['register_form'] = async function(request, response) {
     request.on('end', async function () {
         // 解析参数
         body = querystring.parse(body);
-        // console.log(body)
-        // await query(
-        //     `DROP TABLE user`
-        // )
-        await query(
-            `
-            CREATE TABLE IF NOT EXISTS user(
-                id       INT     NOT NULL    AUTO_INCREMENT,
-                name     TEXT    NOT NULL,
-                password INT     NOT NULL, 
-                PRIMARY KEY (id)
-            )
-            `
-        )
-        let res
-        try { // statements to try
-            // console.log(body.username)
-            // console.log(body.password)
-            var block = [String(body.username), parseInt(String(body.password))]
-            res = await query(
-                // "INSERT INTO user (`id`, `name`, `password`) VALUES (NULL, '" + String(body.username) + ',' + body.password + "')"
-                //"INSERT INTO `user` (`id`, `name`, `password`) VALUES (NULL, 'daveyu824', '123456')"
-                "INSERT INTO user (`id`, `name`, `password`) VALUES (NULL, ?, ?)", block
-            )
-        }
-        catch (e) {
-            console.error(e)
-        }
-        console.log("yaaaaaa = "+String(res))
 
+        await model.createUser()
+        let res
+        let success = model.addUser(body.username,body.password)
 
         res = await query(
             `SELECT * FROM user`
@@ -226,21 +187,8 @@ views['register_form'] = async function(request, response) {
 
 
         var keys = ['keyboard cat'] 
- 
         var cookies = new Cookies(request, response,{ keys: keys })
-         
-        // Get a cookie
-        // var lastVisit = cookies.get('LastVisit', { signed: true })
-                
-        // Set the cookie to a value
         cookies.set('LastVisit', String(body.username), { signed: true })
-        // if (!lastVisit) {
-        //     response.setHeader('Content-Type', 'text/plain')
-        //     response.end('Welcome, first time visitor!')
-        // } else {
-        //     response.setHeader('Content-Type', 'text/plain')
-        //     response.end('Welcome back! Nothing much changed since your last visit at ' + String(body.username) + '.')
-        // }
         response.writeHead(301, { "Location": "http://"+String(host)+":"+String(port)+"/" });
         response.end();
     });
@@ -276,24 +224,27 @@ views['post_article'] = async function (request, response) {
     });
     request.on('end', async function () {
         body = querystring.parse(body);
-        await query(
-            `
-            CREATE TABLE IF NOT EXISTS post(
-                name    TEXT      NOT NULL,
-                time    TIMESTAMP NOT NULL,
-                content TEXT      NOT NULL
-            )
-            `
-        )
+        await model.createPost()
+        // await query(
+        //     `
+        //     CREATE TABLE IF NOT EXISTS post(
+        //         name    TEXT      NOT NULL,
+        //         time    TIMESTAMP NOT NULL,
+        //         content TEXT      NOT NULL
+        //     )
+        //     `
+        // )
         var datetime = new Date().toISOString().slice(0, 19).replace('T', ' ');
         console.log(datetime)
         var keys = ['keyboard cat']
         var cookies = new Cookies(request, response, { keys: keys })
         var username = cookies.get("LastVisit")
         var block = [String(username), datetime, String(body.content)]
-        await query(
-            "INSERT INTO post (name, time, content) VALUE (?, ?, ?)", block
-        )
+
+        await model.addPost()
+        // await query(
+        //     "INSERT INTO post (name, time, content) VALUE (?, ?, ?)", block
+        // )
         response.writeHead(301, { "Location": "http://" + String(host) + ":" + String(port) + "/" });
         response.end();
     });
