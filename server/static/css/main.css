@@ -3,17 +3,17 @@
     height: 3em;
 }
 
-#coin-container{
+#coin-container {
     height: calc(100vh - 64px - 3rem);
 }
 
-#coin-amount{
+#coin-amount {
     font-size: 12vh;
 }
-#coin-counter{
+
+#coin-counter {
     font-size: 3.5vh;
 }
-
 
 .bd-sidebar {
     position: -webkit-sticky;
@@ -21,4 +21,46 @@
     top: calc(64px + 1.5rem);
     z-index: 1000;
     height: calc(80vh);
+}
+
+.btn-mood {
+    font-size: 1.5rem;
+    text-align: center;
+    border-radius: 50%;
+    padding: 0px
+}
+
+.btn-mood:hover {
+    -webkit-animation: spin 0.1s linear infinite;
+    -moz-animation: spin 0.1s linear infinite;
+    animation: spin 0.1s linear infinite;
+}
+
+@-moz-keyframes spin {
+    100% {
+        -moz-transform: rotate(360deg);
+    }
+}
+
+@-webkit-keyframes spin {
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+.btn-mood.active.focus,
+.btn-mood.active:focus,
+.btn-mood.focus,
+.btn-mood:active.focus,
+.btn-mood:active:focus,
+.btn-mood:focus {
+    outline: none !important;
+    box-shadow: none;
 }
