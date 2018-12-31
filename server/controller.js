@@ -122,7 +122,7 @@ views['login'] = function (request, response) {
 
     htmlPage(response, "login.njk", data)
 }
-views['login_form'] = async function(request, response) {
+views['login_form'] = async function (request, response) {
 
     console.log('login_form')
     let data = {
@@ -137,7 +137,7 @@ views['login_form'] = async function(request, response) {
         // 解析参数
         body = querystring.parse(body);
         // await query(
-        //     `DROP TABLE user`
+        //     DROP TABLE user
         // )
         await query(
             `
@@ -150,21 +150,23 @@ views['login_form'] = async function(request, response) {
             `
         )
         let res
-        var keys = ['keyboard cat'] 
-        var cookies = new Cookies(request, response,{ keys: keys })
+        var keys = ['keyboard cat']
+        var cookies = new Cookies(request, response, { keys: keys })
+
         try { // statements to try
             res = await query(
-                "SELECT * FROM user WHERE name = " + String(body.username) 
+                "SELECT * FROM user WHERE name = '" + String(body.username) + "' AND password = '" + String(body.password) + "'"
             )
+            console.log('haha' + String(res))
+            cookies.set('LastVisit', String(body.username), { signed: true })
+            response.writeHead(301, { "Location": "http://" + String(host) + ":" + String(port) + "/" });
+            response.end();
         }
         catch (e) {
-            response.writeHead(301, { "Location": "http://"+String(host)+":"+String(port)+"/register" });
+            response.writeHead(301, { "Location": "http://" + String(host) + ":" + String(port) + "/register" });
             response.end();
         }
 
-        cookies.set('LastVisit', String(body.username), { signed: true })
-        response.writeHead(301, { "Location": "http://"+String(host)+":"+String(port)+"/" });
-        response.end();
     });
 }
 views['register'] = function(request, response) {
