@@ -191,19 +191,6 @@ views['logout'] = function (request, response) {
     response.end();
 }
 
-/*
-views['post_article'] = function (request, response) {
-
-    console.log('post_article')
-    let data = {
-        title: "post article",
-        message: "post article page"
-    }
-
-    htmlPage(response, "post_article.html", data)
-}
-*/
-
 views['post_article'] = async function (request, response) {
     console.log('post_article')
     let body = "";
