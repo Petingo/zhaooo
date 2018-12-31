@@ -80,18 +80,25 @@ views['test'] = function (request, response) {
     htmlPage(response, "test.njk", data)
 }
 
-views['index'] = function (request, response) {
+views['index'] = async function (request, response) {
     console.log('index')
 
     let keys = ['keyboard cat'] 
     let cookies = new Cookies(request, response,{ keys: keys })
     let lastVisit = cookies.get('LastVisit', { signed: true })
 
+    let result = await query(
+        "SELECT * FROM post"
+    )
+
+    /*
     let timestamp = new Date();
     let time = (timestamp.getMonth()+1) + '/' + (timestamp.getDate()) + ' ' + timestamp.getHours() + ':' + timestamp.getMinutes()
+    */
     let data = {
         user_name: lastVisit,
         articles: [
+            /*
             { title: "foo1", time: time, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi " },
             { title: "foo2", time: time, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi " },
             { title: "foo3", time: time, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi " },
@@ -102,10 +109,17 @@ views['index'] = function (request, response) {
             { title: "foo8", time: time, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi " },
             { title: "foo9", time: time, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi " },
             { title: "foo10", time: time, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi " },
-            { title: "foo11", time: time, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi " },
+            { title: "foo11", time: time, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi " }
+            */
         ]
     }
-
+    result.sort(function (a, b) {
+        if (a.time > b.time) { return -1 }
+        if (a.time < b.time) { return 1 }
+    })
+    for (i = 0; i < 10; i++) {
+        data.articles.push({"id":result[i].name, "time":result[i].time, "content":result[i].content})
+    }
     htmlPage(response, "index.njk", data)
 }
 
@@ -125,7 +139,7 @@ views['login_form'] = async function (request, response) {
         title: "login_form",
         message: "login page"
     }
-    var body = "";
+    let body = "";
     request.on('data', function (chunk) {
         body += chunk;
     });
@@ -133,12 +147,23 @@ views['login_form'] = async function (request, response) {
         // 解析参数
         body = querystring.parse(body);
         let res
+<<<<<<< HEAD
         res = await model.createUser()
         
         var keys = ['keyboard cat']
         var cookies = new Cookies(request, response, { keys: keys })
         valid = model.validateUser(body.username, body.password)
         if (valid) {
+=======
+        let keys = ['keyboard cat']
+        let cookies = new Cookies(request, response, { keys: keys })
+
+        try { // statements to try
+            res = await query(
+                "SELECT * FROM user WHERE name = '" + String(body.username) + "' AND password = '" + String(body.password) + "'"
+            )
+            console.log('haha' + String(res))
+>>>>>>> c73a8c479c7c966acd18beea98494668613ae27b
             cookies.set('LastVisit', String(body.username), { signed: true })
             response.writeHead(301, { "Location": "http://" + String(host) + ":" + String(port) + "/" });
             response.end();
@@ -175,6 +200,38 @@ views['register_form'] = async function(request, response) {
     request.on('end', async function () {
         // 解析参数
         body = querystring.parse(body);
+<<<<<<< HEAD
+=======
+        // console.log(body)
+        // await query(
+        //     `DROP TABLE user`
+        // )
+        await query(
+            `
+            CREATE TABLE IF NOT EXISTS user(
+                id       INT     NOT NULL    AUTO_INCREMENT,
+                name     TEXT    NOT NULL,
+                password INT     NOT NULL, 
+                PRIMARY KEY (id)
+            )
+            `
+        )
+        let res
+        try { // statements to try
+            // console.log(body.username)
+            // console.log(body.password)
+            let block = [String(body.username), parseInt(String(body.password))]
+            res = await query(
+                // "INSERT INTO user (`id`, `name`, `password`) VALUES (NULL, '" + String(body.username) + ',' + body.password + "')"
+                //"INSERT INTO `user` (`id`, `name`, `password`) VALUES (NULL, 'daveyu824', '123456')"
+                "INSERT INTO user (`id`, `name`, `password`) VALUES (NULL, ?, ?)", block
+            )
+        }
+        catch (e) {
+            console.error(e)
+        }
+        console.log("yaaaaaa = "+String(res))
+>>>>>>> c73a8c479c7c966acd18beea98494668613ae27b
 
         await model.createUser()
         let res
@@ -186,8 +243,19 @@ views['register_form'] = async function(request, response) {
         console.log(res)
 
 
+<<<<<<< HEAD
         var keys = ['keyboard cat'] 
         var cookies = new Cookies(request, response,{ keys: keys })
+=======
+        let keys = ['keyboard cat'] 
+ 
+        let cookies = new Cookies(request, response,{ keys: keys })
+         
+        // Get a cookie
+        // let lastVisit = cookies.get('LastVisit', { signed: true })
+                
+        // Set the cookie to a value
+>>>>>>> c73a8c479c7c966acd18beea98494668613ae27b
         cookies.set('LastVisit', String(body.username), { signed: true })
         response.writeHead(301, { "Location": "http://"+String(host)+":"+String(port)+"/" });
         response.end();
@@ -196,8 +264,8 @@ views['register_form'] = async function(request, response) {
 
 views['logout'] = function (request, response) {
     console.log('logout')
-    var keys = ['keyboard cat'] 
-    var cookies = new Cookies(request, response,{ keys: keys })
+    let keys = ['keyboard cat'] 
+    let cookies = new Cookies(request, response,{ keys: keys })
     cookies.set('LastVisit', 'nologining', { signed: true })
     response.writeHead(301, { "Location": "http://"+String(host)+":"+String(port)+"/login" });
     response.end();
@@ -218,12 +286,13 @@ views['post_article'] = function (request, response) {
 
 views['post_article'] = async function (request, response) {
     console.log('post_article')
-    var body = "";
+    let body = "";
     request.on('data', function (chunk) {
         body += chunk;
     });
     request.on('end', async function () {
         body = querystring.parse(body);
+<<<<<<< HEAD
         await model.createPost()
         // await query(
         //     `
@@ -245,6 +314,26 @@ views['post_article'] = async function (request, response) {
         // await query(
         //     "INSERT INTO post (name, time, content) VALUE (?, ?, ?)", block
         // )
+=======
+        await query(
+            `
+            CREATE TABLE IF NOT EXISTS post(
+                name    TEXT      NOT NULL,
+                time    TIMESTAMP NOT NULL,
+                content TEXT      NOT NULL
+            )
+            `
+        )
+        let datetime = new Date().toISOString().slice(0, 19).replace('T', ' ');
+        // console.log(datetime)
+        let keys = ['keyboard cat']
+        let cookies = new Cookies(request, response, { keys: keys })
+        let username = cookies.get("LastVisit")
+        let block = [String(username), datetime, String(body.content)]
+        await query(
+            "INSERT INTO post (name, time, content) VALUE (?, ?, ?)", block
+        )
+>>>>>>> c73a8c479c7c966acd18beea98494668613ae27b
         response.writeHead(301, { "Location": "http://" + String(host) + ":" + String(port) + "/" });
         response.end();
     });
