@@ -204,6 +204,7 @@ views['login'] = function (request, response) {
 
     htmlPage(response, "login.njk", data)
 }
+
 views['login_form'] = async function (request, response) {
 
     console.log('login_form')
@@ -236,6 +237,7 @@ views['login_form'] = async function (request, response) {
 
     });
 }
+
 views['register'] = function (request, response) {
 
     console.log('register')
@@ -246,6 +248,7 @@ views['register'] = function (request, response) {
 
     htmlPage(response, "register.njk", data)
 }
+
 views['register_form'] = async function (request, response) {
 
     console.log('register_form')
