@@ -59,17 +59,15 @@ let addUser = async function (name, password) {
 }
 
 let validateUser = async function (name, password) {
-
-    try { // statements to try
-        await query(
-            "SELECT * FROM user WHERE name = '" + String(name) + "' AND password = '" + String(password) + "'"
-        )
+    let result = await query(
+        // "SELECT * FROM user WHERE name = '" + String(name) + "' AND password = '" + String(password) + "'"
+        `SELECT * FROM user WHERE name = "${name}" AND password = "${password}"`
+    )
+    if (result.length == 1) {
+        return true        
+    } else {
+        return false
     }
-    catch (e) {
-        return console.error(e)
-    }
-    return true
-
 }
 
 let clearUser = async function () {

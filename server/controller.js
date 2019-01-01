@@ -233,7 +233,6 @@ views['login'] = function (request, response) {
 }
 
 views['login_form'] = async function (request, response) {
-
     console.log('login_form')
     let data = {
         title: "login_form",
@@ -246,7 +245,7 @@ views['login_form'] = async function (request, response) {
     request.on('end', async function () {
         // 解析参数
         body = querystring.parse(body);
-        let res = await model.createUser()
+        await model.createUser()
 
         let keys = ['keyboard cat']
         let cookies = new Cookies(request, response, { keys: keys })
