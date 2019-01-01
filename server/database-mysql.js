@@ -48,7 +48,8 @@ let createUser = async function () {
 let addUser = async function (name, password) {
     try { // statements to try
         await query(
-            `INSERT INTO user (name, password) VALUE ( ` + '"' + String(name) + '"' + `,` + String(password) + `)`
+            // `INSERT INTO user (name, password) VALUE ( ` + '"' + String(name) + '"' + `,` + String(password) + `)`
+            `INSERT INTO user (name, password) VALUE ("${name}", "${password}")`
         )
     }
     catch (e) {

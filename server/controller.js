@@ -84,13 +84,13 @@ urls['/new_board'] = {
             body += chunk;
         });
         request.on('end', async function () {
-            body = querystring.parse(body);
+            body = querystring.parse(body)
             
             var keys = ['keyboard cat']
             var cookies = new Cookies(request, response, { keys: keys })
             var username = cookies.get("LastVisit")
             var block = [body.name, body.reason, String(username)]
-            console.log(block);
+            console.log(block)
             model.applyNewBoard(block)
         });
     }
@@ -140,6 +140,18 @@ views['index'] = async function (request, response) {
     let keys = ['keyboard cat']
     let cookies = new Cookies(request, response, { keys: keys })
     let lastVisit = cookies.get('LastVisit', { signed: true })
+
+    lastVisit = String(lastVisit)
+    if (lastVisit == "nologining" || lastVisit == "undefined") {
+        console.log('login')
+        let data = {
+            title: "login",
+            message: "login page"
+        }
+        htmlPage(response, "login.njk", data)
+        return
+    }
+
     let result = await model.listPost(lastVisit)
 
     let data = {
