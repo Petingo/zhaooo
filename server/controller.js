@@ -64,11 +64,13 @@ urls['/article_motion'] = {
             console.log(body);
             if (body.action == '😍') {
                 console.log('love')
-                model.lovePost(body['post-id']);
+                await model.lovePost(body['post-id']);
+                await model.addCoin(body['post-id']);
             }
             else if (body.action == '😡') {
                 console.log('angry')
-                model.angryPost(body['post-id']);
+                await model.angryPost(body['post-id']);
+                await model.deductCoin(body['post-id']);
             }
         });
     }
@@ -205,7 +207,7 @@ views['select_board'] = async function (request, response) {
                 {
                     "id": r.id,
                     "name": r.name,
-                    "time": r.time,
+                    "time": toDateString(r.time),
                     "content": r.content,
                     "love": r.love,
                     "angry": r.angry
@@ -343,10 +345,14 @@ views['register'] = function (request, response) {
     htmlPage(response, "register.njk")
 }
 
-views['coin'] = function (request, response) {
+views['coin'] = async function (request, response) {
     console.log('coin')
+    let keys = ['keyboard cat']
+    let cookies = new Cookies(request, response, { keys: keys })
+    let lastVisit = cookies.get('LastVisit', { signed: true })
+    let result = await model.queryCoin(lastVisit)
     let data = {
-        coin_amoount: 66666
+        coin_amoount: parseInt(String(result[0].coin))
     }
     htmlPage(response, "coin.njk", data)
 }
