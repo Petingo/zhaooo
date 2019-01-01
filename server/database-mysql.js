@@ -151,8 +151,13 @@ let lovePost = async function (postId) {
 
 let addCoin = async function (postId) {
     try { // statements to try
+        let username = await query(
+            `SELECT name FROM post WHERE id = ${postId}`
+        )
+        username = String(username[0].name)
+        console.log(username)
         await query(
-            `UPDATE user SET coin = coin + 1 WHERE name = ${postId}`
+            `UPDATE user SET coin = coin + 1 WHERE name = "${username}"`
         )
         console.log("coin + 1")
     }
@@ -176,8 +181,13 @@ let angryPost = async function (postId) {
 
 let deductCoin = async function (postId) {
     try { // statements to try
+        let username = await query(
+            `SELECT name FROM post WHERE id = ${postId}`
+        )
+        username = String(username[0].name)
+        console.log(username)
         await query(
-            `UPDATE user SET coin = coin - 1 WHERE name = ${postId}`
+            `UPDATE user SET coin = coin - 1 WHERE name = "${username}"`
         )
         console.log("coin - 1")
     }
