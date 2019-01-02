@@ -124,7 +124,7 @@ let addPost = async function (block) {
     return true
 }
 
-let listPost = async function (lastVisit) {
+let listPost = async function () {
     return await query(
         "SELECT * FROM post"
     )
