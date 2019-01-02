@@ -160,7 +160,7 @@ views['index'] = async function (request, response, board) {
             message: "login page"
         }
         htmlPage(response, "login.njk", data)
-        return
+        return 0
     }
 
     let result
@@ -224,7 +224,6 @@ views['login'] = function (request, response) {
         title: "login",
         message: "login page"
     }
-
     htmlPage(response, "login.njk", data)
 }
 
@@ -285,6 +284,13 @@ views['register_form'] = async function (request, response) {
     request.on('end', async function () {
         // 解析参数
         body = querystring.parse(body);
+        
+        let username = String(body.username)
+        if (/[^ 0-9 a-z A-Z]/.test(username)) {
+            console.log('invalid username!')
+            htmlPage(response, "register.njk")
+            return 0
+        }
 
         await model.createUser()
         let res
