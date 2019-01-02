@@ -3,8 +3,8 @@ const http = require('http')
 const static = require('node-static')
 const Cookies = require('cookies')
 const querystring = require('querystring')
-// const model = require('./database-sqlite')
-const model = require('./database-mysql')
+const model = require('./database-sqlite')
+// const model = require('./database-mysql')
 const url = require('url')
 
 const host = "127.0.0.1"
@@ -75,13 +75,13 @@ urls['/article_motion'] = {
             console.log(body);
             if (body.action == '😍') {
                 console.log('love')
-                await model.lovePost(body['post-id']);
-                await model.addCoin(body['post-id']);
+                model.lovePost(body['post-id']);
+                model.addCoin(body['post-id']);
             }
             else if (body.action == '😡') {
                 console.log('angry')
-                await model.angryPost(body['post-id']);
-                await model.deductCoin(body['post-id']);
+                model.angryPost(body['post-id']);
+                model.deductCoin(body['post-id']);
             }
         });
     }
@@ -96,7 +96,7 @@ urls['/new_board'] = {
         });
         request.on('end', async function () {
             body = querystring.parse(body)
-            
+
             var keys = ['keyboard cat']
             var cookies = new Cookies(request, response, { keys: keys })
             var username = cookies.get("LastVisit")
@@ -175,10 +175,10 @@ views['index'] = async function (request, response, board) {
     console.log("start asking for data")
     let zhaoClubList = JSON.stringify(await model.getZhaoClubList())
     let replyRaw = Object.values(JSON.parse(JSON.stringify(await model.getReply())))
-    
+
     let reply = {}
-    for( r of replyRaw){
-        if(reply[r.postId] == undefined){
+    for (r of replyRaw) {
+        if (reply[r.postId] == undefined) {
             reply[r.postId] = []
         }
         reply[r.postId].push(r)
@@ -202,7 +202,7 @@ views['index'] = async function (request, response, board) {
                 "id": r.id,
                 "name": r.name,
                 "in_club": zhaoClubList.indexOf(r.name) > -1 ? true : false,
-                "time": toDateString(r.time),
+                "time": toDateString(new Date(r.time)),
                 "content": r.content,
                 "love": r.love,
                 "angry": r.angry,

@@ -1,60 +1,36 @@
 const sqlite = require('sqlite')
-const query = function(sql){
+const query = function (sql) {
     return new Promise(async (resolve, reject) => {
         sqlite.open('./database/db.sqlite')
-        .then((db) => {
-            resolve(db.all(sql))
-        })
+            .then((db) => {
+                resolve(db.all(sql))
+            })
     })
-    // catch error ㄉ版本:
-    // return new Promise(async (resolve, reject) => {
-    //     sqlite.open('./database/db.sqlite')
-    //     .then((db) => {
-    //         resolve(db.all(sql).catch(e => reject(e)))
-    //     })
-    //     .catch(e => reject(e))
-    // })
 }
 
-let createUser = async function(){
-    // query(
-    //     `DROP TABLE user`
-    // )
-    try{
+let createUser = async function () {
+    try {
         await query(
             `
             CREATE TABLE IF NOT EXISTS user(
-                id      INTEGER PRIMARY KEY   AUTOINCREMENT,
-                name    TEXT    NOT NULL,
-                password INT NOT NULL
+                id       INT  PRIMARY KEY   AUTOINCREMENT,
+                name     TEXT NOT NULL,
+                password TEXT NOT NULL,
+                coin     INT  DEFAULT 0
             )
             `
         )
     }
-    catch(e){
-        return console.error(e)
-    }
-    return true
-}
-
-let validateUser = async function(name, password){
-
-    try { // statements to try
-        await query(        
-            "SELECT * FROM user WHERE name = '" + String(name) + "' AND password = '" + String(password) + "'"
-        )
-    }
     catch (e) {
         return console.error(e)
     }
     return true
-    
 }
 
-let addUser = async function(name, password){
+let addUser = async function (name, password) {
     try { // statements to try
         await query(
-            `INSERT INTO user ( name,password ) VALUES ( `+'"'+ String(name)+'"'+`,`+String(password)+ `)`
+            `INSERT INTO user (name, password) VALUES ("${name}", "${password}")`
         )
     }
     catch (e) {
@@ -63,48 +39,223 @@ let addUser = async function(name, password){
     return true
 
 }
-let listPost = async function(lastVisit){
-    return result =  await query(
-        "SELECT * FROM post"
+
+let validateUser = async function (name, password) {
+    let result = await query(
+        // "SELECT * FROM user WHERE name = '" + String(name) + "' AND password = '" + String(password) + "'"
+        `SELECT * FROM user WHERE name = "${name}" AND password = "${password}"`
     )
-}
-let createPost = async function(){
-    try{
-        await query(
-            `
-            CREATE TABLE IF NOT EXISTS post(
-                name    TEXT      NOT NULL,
-                time    TIMESTAMP NOT NULL,
-                content TEXT      NOT NULL
-            )
-            `
-        )
+    if (result.length == 1) {
+        return true
+    } else {
+        return false
     }
-    catch(e){
-        return console.error(e)
-    }
-    return true
 }
-let addPost = async function(block){
-    try { // statements to try
-        let haha =             "INSERT INTO post (name, time, content) VALUES ("+ String(block[0]) + ", "+ String(block[1]) + ", "+ String(block[2]) + ")"
 
-        console.log(haha)
+let clearUser = async function () {
+    try {
         await query(
-            "INSERT INTO post (name, time, content) VALUES ('"+ String(block[0]) + "', '"+ String(block[1]) + "', '"+ String(block[2]) + "')"
+            `DROP TABLE user`
         )
     }
     catch (e) {
         return console.error(e)
     }
     return true
-
 }
-let listUser = async function(){
+
+let listUser = async function () {
     return await query(
         "SELECT * FROM user"
     )
 }
+
+let createPost = async function () {
+    try {
+        await query(
+            `
+            CREATE TABLE IF NOT EXISTS post(
+                id      INTEGER   NOT NULL  PRIMARY KEY AUTOINCREMENT,
+                name    TEXT      NOT NULL,
+                time    TIMESTAMP NOT NULL,
+                content TEXT      NOT NULL,
+                love    INTEGER   DEFAULT 0,
+                angry   INTEGER   DEFAULT 0,
+                board   TEXT
+            )
+            `
+        )
+    }
+    catch (e) {
+        return console.error(e)
+    }
+    return true
+}
+
+let addPost = async function (block) {
+    try { // statements to try
+        let name = String(block[0])
+        let time = String(block[1])
+        let content = String(block[2])
+        let board = String(block[3])
+        // console.log(haha)
+        await query(
+            `INSERT INTO post (name, time, content, board) VALUES ("${name}", "${time}", "${content}", "${board}")`
+        )
+    }
+    catch (e) {
+        return console.error(e)
+    }
+    return true
+
+}
+
+let listPost = async function (lastVisit) {
+    return result = await query(
+        "SELECT * FROM post"
+    )
+}
+
+let listSpecificPost = async function (board) {
+    return await query(
+        `SELECT * FROM post WHERE board = "${board}"`
+    )
+}
+
+let lovePost = async function (postId) {
+    try { // statements to try
+        await query(
+            `UPDATE post SET love = love + 1 WHERE id = ${postId}`
+        )
+    }
+    catch (e) {
+        return console.error(e)
+    }
+    return true
+}
+
+let addCoin = async function (postId) {
+    try { // statements to try
+        let username = await query(
+            `SELECT name FROM post WHERE id = ${postId}`
+        )
+        username = String(username[0].name)
+        console.log(username)
+        await query(
+            `UPDATE user SET coin = coin + 1 WHERE name = "${username}"`
+        )
+        console.log("coin + 1")
+    }
+    catch (e) {
+        return console.error(e)
+    }
+    return true
+}
+
+let angryPost = async function (postId) {
+    try { // statements to try
+        await query(
+            `UPDATE post SET angry = angry + 1 WHERE id = ${postId}`
+        )
+    }
+    catch (e) {
+        return console.error(e)
+    }
+    return true
+}
+
+let deductCoin = async function (postId) {
+    try { // statements to try
+        let username = await query(
+            `SELECT name FROM post WHERE id = ${postId}`
+        )
+        username = String(username[0].name)
+        console.log(username)
+        await query(
+            `UPDATE user SET coin = coin - 1 WHERE name = "${username}"`
+        )
+        console.log("coin - 1")
+    }
+    catch (e) {
+        return console.error(e)
+    }
+    return true
+}
+
+let applyNewBoard = async function (block) {
+    try { // statements to try
+        await query(
+            `
+            CREATE TABLE IF NOT EXISTS new_board_application(
+                id          INTEGER NOT NULL  PRIMARY KEY  AUTOINCREMENT,
+                name        TEXT    NOT NULL,
+                reason      TEXT,
+                username    TEXT    NOT NULL
+            )`
+        )
+        let name = String(block[0])
+        let reason = String(block[1])
+        let username = String(block[2])
+        await query(
+            `INSERT INTO new_board_application (name, reason, username) VALUES ("${name}", "${reason}", "${username}")`
+        )
+    }
+    catch (e) {
+        return console.error(e)
+    }
+    return true
+}
+
+let queryCoin = async function (user) {
+    return await query(
+        `SELECT coin FROM user WHERE name = "${user}"`
+    )
+}
+
+const clubThreshold = 87
+let getZhaoClubList = async function () {
+    return await query(
+        `SELECT name FROM user WHERE coin >= ${clubThreshold}`
+    )
+}
+
+let createReplyTable = async function () {
+    return await query(
+        `CREATE TABLE IF NOT EXISTS reply(
+            id       INT     NOT NULL  PRIMARY KEY  AUTOINCREMENT,
+            username TEXT    NOT NULL,
+            postId   INT     NOT NULL,
+            content  TEXT    NOT NULL
+        )`
+    )
+}
+
+let getReply = async function () {
+    await createReplyTable()
+    return await query(
+        `SELECT * FROM reply`
+    )
+}
+
+let getReplyOf = async function (postId) {
+    await createReplyTable()
+    return await query(
+        `SELECT * FROM reply WHERE postID = ${postId}`
+    )
+}
+
+let addReply = async function (username, postId, content) {
+    try { // statements to try
+        await query(
+            `INSERT INTO reply (username, postId, content) VALUES ('${username}', ${postId}, '${content}')`
+        )
+    }
+    catch (e) {
+        return console.error(e)
+    }
+    return true
+}
+
 async function test() {
     let s = await query(`SELECT * FROM user`)
     console.log(s);
@@ -136,4 +287,4 @@ async function test() {
 
 test()
 
-module.exports = { query, createUser, addUser, validateUser, createPost, addPost, listUser, listPost}
+module.exports = { query, createUser, addUser, validateUser, clearUser, createPost, addPost, listUser, listPost, listSpecificPost, lovePost, addCoin, angryPost, deductCoin, applyNewBoard, queryCoin, getZhaoClubList, getReply, addReply }
