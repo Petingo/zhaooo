@@ -21,7 +21,7 @@ urls['/'] = {
     controller: 'index'
 }
 
-urls['/friend']={
+urls['/friend'] = {
     method: 'get',
     controller: 'friend'
 }
@@ -37,7 +37,7 @@ urls['/add_friend'] = {
             body = querystring.parse(body);
             let username = await getUserName(request, response)
             let newFriendName = body.username
-            
+
             model.addFriend(username, newFriendName)
         });
     }
@@ -165,7 +165,7 @@ views['test'] = function (request, response) {
     htmlPage(response, "test.njk", data)
 }
 
-async function getUserName(request, response){
+async function getUserName(request, response) {
     let keys = ['keyboard cat']
     let cookies = new Cookies(request, response, { keys: keys })
     let lastVisit = cookies.get('LastVisit', { signed: true })
@@ -175,9 +175,9 @@ async function getUserName(request, response){
 views['friend'] = async function (request, response) {
     console.log('friend')
     let username = await getUserName(request, response);
-    
+
     let friends = (await model.listFriend(username))[0].friend;
-    
+
     let data = {
         user_name: username,
         friends: friends == null ? [''] : friends.split(',')
@@ -201,7 +201,7 @@ views['index'] = async function (request, response, board) {
             message: "login page"
         }
         htmlPage(response, "login.njk", data)
-        return
+        return 0
     }
 
     let result
@@ -324,6 +324,13 @@ views['register_form'] = async function (request, response) {
     request.on('end', async function () {
         // 解析参数
         body = querystring.parse(body);
+
+        let username = String(body.username)
+        if (/[^ 0-9 a-z A-Z]/.test(username)) {
+            console.log('invalid username!')
+            htmlPage(response, "register.njk")
+            return 0
+        }
 
         await model.createUser()
         let res
