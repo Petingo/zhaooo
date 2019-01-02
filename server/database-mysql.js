@@ -230,5 +230,40 @@ let getZhaoClubList = async function(){
         `SELECT name FROM user WHERE coin >= ${clubThreshold}`
     )
 }
+let createReplyTable = async function(){
+    return await query(
+        `CREATE TABLE IF NOT EXISTS reply(
+            id       INT     NOT NULL    AUTO_INCREMENT,
+            username TEXT    NOT NULL,
+            postId   INT     NOT NULL,
+            content  TEXT    NOT NULL,
+            PRIMARY  KEY (id)
+        )`
+    )
+}
+
+let getReply = async function(){
+    await createReplyTable()
+    return await query(
+        `SELECT * FROM reply`
+    )
+}
+let getReplyOf = async function(postId){
+    await createReplyTable()
+    return await query(
+        `SELECT * FROM reply WHERE postID = ${postId}`
+    )
+}
+let addReply = async function (username, postId, content) {
+    try { // statements to try
+        await query(
+            `INSERT INTO reply (username, postId, content) VALUE ('${username}', ${postId}, '${content}')`
+        )
+    }
+    catch (e) {
+        return console.error(e)
+    }
+    return true
+}
 createPost()
-module.exports = { query, createUser, addUser, validateUser, clearUser, createPost, addPost, listUser, listPost, listSpecificPost, lovePost, addCoin, angryPost, deductCoin, applyNewBoard, queryCoin, getZhaoClubList}
+module.exports = { query, createUser, addUser, validateUser, clearUser, createPost, addPost, listUser, listPost, listSpecificPost, lovePost, addCoin, angryPost, deductCoin, applyNewBoard, queryCoin, getZhaoClubList, getReply, addReply}
