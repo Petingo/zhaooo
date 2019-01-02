@@ -3,8 +3,8 @@ const http = require('http')
 const static = require('node-static')
 const Cookies = require('cookies')
 const querystring = require('querystring')
-const model = require('./database-sqlite')
-// const model = require('./database-mysql')
+// const model = require('./database-sqlite')
+const model = require('./database-mysql')
 
 const host = "127.0.0.1"
 const port = 8000
