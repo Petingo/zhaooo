@@ -76,13 +76,13 @@
                             <label class="form-check-label" for="exampleCheck1">匿名發表</label>
                         </div>
                     </div>
-                    
+
                     {# 選看板用的 #}
                     <input id="select-board" type="hidden" name="input_board" value="八卦">
 
                     <div class="modal-footer">
                         <button class="btn btn-info dropdown-toggle" type="button" id="select-post-board" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        八卦
+                            八卦
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <a class="dropdown-item select-post-board-item" href="#">八卦</a>
@@ -154,12 +154,12 @@
 
     <div style="height:100%;">
         {% for item in articles %}
-            <div class="card mt-3" style="width: 100%;">
+            <div id="article-{{item.id}}" class="card mt-3" style="width: 100%;">
                 <div class="card-body">
                     <span><img src="/static/media/img/avatar.svg" alt="Avatar" style="height: 2.5rem; margin-left: -5px; margin-bottom: 0.5rem" class="mr-2">
-                        <span class="name" style="font-size: 1.5rem; padding-top:0.5rem">{{ item.name }}</span></span>
-                    <h6 class="time mb-2 text-muted">{{ item.time }}</h6>
-                    <p class="content">{{ item.content }}</p>
+                        <span class="name {{ " blink" if item.in_club }}"="blink" if="if" item.in_club="item.in_club" }}""="}}" "" style="font-size: 1.5rem; padding-top:0.5rem">{{ item.name }}</span></span>
+                    <h6 class="time text-muted">{{ item.time }}</h6>
+                    <p class="content my-3">{{ item.content }}</p>
 
                     <form id="article" action="article_motion" method="post" target="hiddenFrame">
                         <input type="hidden" name="post-id" value="{{item.id}}">
@@ -173,8 +173,29 @@
                         <span id="angry-amount-{{item.id}}" class="span-mood-angry">{{ item.angry }}</span>
 
                     </form>
-                    {# <a href="#" class="like"></a> #}
                 </div>
+                <ul class="list-group list-group-flush" id="reply-list-{{item.id}}">
+                    {% for reply in item.reply %}
+                        <li class="list-group-item">
+                            <b>{{ reply.username }}：</b>{{ reply.content }}
+                        </li>
+                    {% endfor %}
+                    <div class="new-reply-space" style = "display:none;"></div>
+                    <li class="list-group-item">
+                        <form id="article" action="reply" method="post" target="hiddenFrame">
+                            <div class="input-group my-1">
+                                <input type="hidden" name="username" value="{{user_name}}">
+                                <input type="hidden" name="postId" value="{{item.id}}">
+                                <input type="text" reply-content-id="{{item.id}}" class="form-control reply-content" placeholder="留言..." aria-label="reply" aria-describedby="reply" name="content" required>
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-primary btn-submit-reply" type="submit" submit-reply-id="{{item.id}}">送出</button>
+                                </div>
+                            </div>
+                        </form>
+
+                    </li>
+                </ul>
+
             </div>
         {% endfor %}
         <script>
@@ -190,6 +211,16 @@
                         let showText = $("#love-amount-" + id)
                         showText.text(parseInt(showText.text()) + 1)
                     }
+                });
+                $(".btn-submit-reply").click(function () {
+                    let id = $(this).attr('submit-reply-id')
+                    let username = '{{user_name}}';
+                    let content = $(`#reply-list-${id} .reply-content`).val()
+                    $(`#reply-list-${id} .reply-content`).attr("value", "")
+                    console.log(id)
+                    $( `<li class="list-group-item">
+                            <b>${username}：</b>${content}
+                        </li>` ).insertBefore(`#reply-list-${id} .new-reply-space`);
                 });
             });
         </script>

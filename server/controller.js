@@ -48,6 +48,21 @@ urls['/post_article'] = {
     controller: 'post_article'
 }
 
+urls['/reply'] = {
+    method: 'post',
+    controller: async function (request, response) {
+        let body = "";
+        request.on('data', function (chunk) {
+            body += chunk;
+        });
+        request.on('end', async function () {
+            body = querystring.parse(body);
+            console.log(body);
+            model.addReply(body.username, body.postId, body.content);
+        });
+    }
+}
+
 urls['/article_motion'] = {
     method: 'post',
     controller: async function (request, response) {
@@ -132,7 +147,7 @@ views['test'] = function (request, response) {
 
 views['index'] = async function (request, response, board) {
     console.log('index')
-    await model.createPost()
+    // await model.createPost()
     let keys = ['keyboard cat']
     let cookies = new Cookies(request, response, { keys: keys })
     let lastVisit = cookies.get('LastVisit', { signed: true })
@@ -157,6 +172,18 @@ views['index'] = async function (request, response, board) {
     } else {
         result = await model.listPost()
     }
+    console.log("start asking for data")
+    let zhaoClubList = JSON.stringify(await model.getZhaoClubList())
+    let replyRaw = Object.values(JSON.parse(JSON.stringify(await model.getReply())))
+    
+    let reply = {}
+    for( r of replyRaw){
+        if(reply[r.postId] == undefined){
+            reply[r.postId] = []
+        }
+        reply[r.postId].push(r)
+        console.log(r)
+    }
 
     let data = {
         user_name: lastVisit,
@@ -174,17 +201,20 @@ views['index'] = async function (request, response, board) {
             {
                 "id": r.id,
                 "name": r.name,
+                "in_club": zhaoClubList.indexOf(r.name) > -1 ? true : false,
                 "time": toDateString(r.time),
                 "content": r.content,
                 "love": r.love,
-                "angry": r.angry
+                "angry": r.angry,
+                "reply": reply[r.id]
             })
+
         counter++;
         if (counter == 10) {
             break;
         }
     }
-
+    console.log(data.articles)
     htmlPage(response, "index.njk", data)
 }
 
@@ -356,7 +386,6 @@ function requestHandler(request, response) {
     catch (e) {
         console.error(e);
     }
-
 }
-http.createServer(requestHandler).listen(port, host);
+http.createServer(requestHandler).listen(port, host)
 console.log("Server has started.");

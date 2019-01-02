@@ -64,3 +64,153 @@
     outline: none !important;
     box-shadow: none;
 }
+
+.blink {
+    display: inline-block;
+    background: linear-gradient(left, #ffd500, #ffea00);
+    background: -webkit-linear-gradient(left, #ffd500, #ffea00);
+    background: -o-linear-gradient(right, #ffd500, #ffea00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: scratchy 4s linear forwards infinite;
+    /* 其它浏览器兼容性前缀 */
+    -webkit-animation: scratchy 4s linear forwards infinite;
+    -moz-animation: scratchy 4s linear forwards infinite;
+    -ms-animation: scratchy 4s linear forwards infinite;
+    -o-animation: scratchy 4s linear forwards infinite;
+}
+
+@keyframes scratchy {
+    0% {
+        background-position: 0 0;
+    }
+    
+    100% {
+        background-position: 100px -100px;
+    }
+}
+
+/* 添加兼容性前缀 */
+@-webkit-keyframes scratchy {
+    0% {
+        background-position: 0 0;
+    }
+
+    100% {
+        background-position: 60px -60px;
+    }
+}
+
+/* @-moz-keyframes scratchy {
+    0% {
+        background-position: 0 0;
+    }
+
+    25% {
+        background-position: 0 0;
+    }
+
+    26% {
+        background-position: 20px -20px;
+    }
+
+    50% {
+        background-position: 20px -20px;
+    }
+
+    51% {
+        background-position: 40px -40px;
+    }
+
+    75% {
+        background-position: 40px -40px;
+    }
+
+    76% {
+        background-position: 60px -60px;
+    }
+
+    99% {
+        background-position: 60px -60px;
+    }
+
+    100% {
+        background-position: 0 0;
+    }
+}
+
+@-ms-keyframes scratchy {
+    0% {
+        background-position: 0 0;
+    }
+
+    25% {
+        background-position: 0 0;
+    }
+
+    26% {
+        background-position: 20px -20px;
+    }
+
+    50% {
+        background-position: 20px -20px;
+    }
+
+    51% {
+        background-position: 40px -40px;
+    }
+
+    75% {
+        background-position: 40px -40px;
+    }
+
+    76% {
+        background-position: 60px -60px;
+    }
+
+    99% {
+        background-position: 60px -60px;
+    }
+
+    100% {
+        background-position: 0 0;
+    }
+}
+
+@-o-keyframes scratchy {
+    0% {
+        background-position: 0 0;
+    }
+
+    25% {
+        background-position: 0 0;
+    }
+
+    26% {
+        background-position: 20px -20px;
+    }
+
+    50% {
+        background-position: 20px -20px;
+    }
+
+    51% {
+        background-position: 40px -40px;
+    }
+
+    75% {
+        background-position: 40px -40px;
+    }
+
+    76% {
+        background-position: 60px -60px;
+    }
+
+    99% {
+        background-position: 60px -60px;
+    }
+
+    100% {
+        background-position: 0 0;
+    }
+} */

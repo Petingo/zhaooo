@@ -28,7 +28,17 @@
             兆</h1>
         <p></p>
         <h4 id="coin-counter">
-            你是全台科前 9.2% 有錢的人！！！
+            {% if coin_amoount > 0 %}
+                {% if coin_amoount >= 87 %}
+                    恭喜你進入兆神會！
+                {% endif %}
+                {% if coin_amoount < 87 %}
+                    你是全台科前 9.2% 有錢的人，多發點廢文ㄅ！加油！
+                {% endif %}
+            {% endif %}
+            {% if coin_amoount <= 0 %}
+                死窮逼 ㄏㄏ
+            {% endif %}
         </h4>
     </div>
 {% endblock %}
