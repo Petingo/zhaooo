@@ -152,6 +152,7 @@ views['index'] = async function (request, response) {
         return
     }
 
+    let zhaoClubList = JSON.stringify(await model.getZhaoClubList())
     let result = await model.listPost(lastVisit)
 
     let data = {
@@ -170,6 +171,7 @@ views['index'] = async function (request, response) {
             {
                 "id": r.id,
                 "name": r.name,
+                "in_club": zhaoClubList.indexOf(r.name) > -1 ? true : false,
                 "time": toDateString(r.time),
                 "content": r.content,
                 "love": r.love,
