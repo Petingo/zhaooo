@@ -197,7 +197,7 @@
                     {% endfor %}
                     <div class="new-reply-space" style = "display:none;"></div>
                     <li class="list-group-item">
-                        <form id="article" action="reply" method="post" target="hiddenFrame">
+                        <form id="reply-form-{{item.id}}" action="reply" method="post" target="hiddenFrame">
                             <div class="input-group my-1">
                                 <input type="hidden" name="username" value="{{user_name}}">
                                 <input type="hidden" name="postId" value="{{item.id}}">
@@ -228,10 +228,17 @@
                     }
                 });
                 $(".btn-submit-reply").click(function () {
+                    event.preventDefault();
                     let id = $(this).attr('submit-reply-id')
                     let username = '{{user_name}}';
                     let content = $(`#reply-list-${id} .reply-content`).val()
-                    $(`#reply-list-${id} .reply-content`).attr("value", "")
+                    if(content.length == 0){
+                        return
+                    }
+
+                    let form = $(`#reply-form-${id}`)[0]
+                    $(form).submit()
+                    $(`#reply-list-${id} .reply-content`).val("")
                     console.log(id)
                     $( `<li class="list-group-item">
                             <b>${username}：</b>${content}
