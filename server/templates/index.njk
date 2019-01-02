@@ -195,13 +195,13 @@
                             <b>{{ reply.username }}：</b>{{ reply.content }}
                         </li>
                     {% endfor %}
-                    <div class="new-reply-space" style = "display:none;"></div>
+                    <div class="new-reply-space" style="display:none;"></div>
                     <li class="list-group-item">
                         <form id="reply-form-{{item.id}}" action="reply" method="post" target="hiddenFrame">
                             <div class="input-group my-1">
                                 <input type="hidden" name="username" value="{{user_name}}">
                                 <input type="hidden" name="postId" value="{{item.id}}">
-                                <input type="text" reply-content-id="{{item.id}}" class="form-control reply-content" placeholder="留言..." aria-label="reply" aria-describedby="reply" name="content" required>
+                                <input type="text" reply-content-id="{{item.id}}" class="form-control reply-content" placeholder="留言..." aria-label="reply" aria-describedby="reply" name="content" required="required">
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-primary btn-submit-reply" type="submit" submit-reply-id="{{item.id}}">送出</button>
                                 </div>
@@ -232,17 +232,16 @@
                     let id = $(this).attr('submit-reply-id')
                     let username = '{{user_name}}';
                     let content = $(`#reply-list-${id} .reply-content`).val()
-                    if(content.length == 0){
+                    if (content.length == 0) {
                         return
                     }
 
                     let form = $(`#reply-form-${id}`)[0]
                     $(form).submit()
                     $(`#reply-list-${id} .reply-content`).val("")
-                    console.log(id)
-                    $( `<li class="list-group-item">
+                    $(`<li class="list-group-item">
                             <b>${username}：</b>${content}
-                        </li>` ).insertBefore(`#reply-list-${id} .new-reply-space`);
+                        </li>`).insertBefore(`#reply-list-${id} .new-reply-space`);
                 });
             });
         </script>

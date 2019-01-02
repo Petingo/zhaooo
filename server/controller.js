@@ -61,7 +61,6 @@ urls['/reply'] = {
         });
         request.on('end', async function () {
             body = querystring.parse(body);
-            console.log(body);
             model.addReply(body.username, body.postId, body.content);
         });
     }
@@ -76,16 +75,15 @@ urls['/article_motion'] = {
         });
         request.on('end', async function () {
             body = querystring.parse(body);
-            console.log(body);
             if (body.action == '😍') {
                 console.log('love')
-                await model.lovePost(body['post-id']);
-                await model.addCoin(body['post-id']);
+                model.lovePost(body['post-id']);
+                model.addCoin(body['post-id']);
             }
             else if (body.action == '😡') {
                 console.log('angry')
-                await model.angryPost(body['post-id']);
-                await model.deductCoin(body['post-id']);
+                model.angryPost(body['post-id']);
+                model.deductCoin(body['post-id']);
             }
         });
     }
@@ -105,7 +103,7 @@ urls['/new_board'] = {
             var cookies = new Cookies(request, response, { keys: keys })
             var username = cookies.get("LastVisit")
             var block = [body.name, body.reason, String(username)]
-            console.log(block)
+            // console.log(block)
             model.applyNewBoard(block)
         });
     }
@@ -177,7 +175,6 @@ views['index'] = async function (request, response) {
             reply[r.postId] = []
         }
         reply[r.postId].push(r)
-        console.log(r)
     }
 
     let data = {
@@ -209,7 +206,6 @@ views['index'] = async function (request, response) {
             break;
         }
     }
-    console.log(data.articles)
     htmlPage(response, "index.njk", data)
 }
 
