@@ -32,7 +32,7 @@ let createUser = async function () {
             CREATE TABLE IF NOT EXISTS user(
                 id       INT     NOT NULL    AUTO_INCREMENT,
                 name     TEXT    NOT NULL,
-                password TEXT     NOT NULL,
+                password TEXT    NOT NULL,
                 coin     INT     DEFAULT 0, 
                 PRIMARY  KEY (id)
             )
@@ -94,7 +94,7 @@ let createPost = async function () {
         await query(
             `
             CREATE TABLE IF NOT EXISTS post(
-                id      INT       NOT NULL    AUTO_INCREMENT,
+                id      INT       NOT NULL    AUTOIN_CREMENT,
                 name    TEXT      NOT NULL,
                 time    TIMESTAMP NOT NULL,
                 content TEXT      NOT NULL,
@@ -124,7 +124,7 @@ let addPost = async function (block) {
     return true
 }
 
-let listPost = async function (lastVisit) {
+let listPost = async function () {
     return await query(
         "SELECT * FROM post"
     )
@@ -224,12 +224,14 @@ let queryCoin = async function (user) {
         `SELECT coin FROM user WHERE name = "${user}"`
     )
 }
+
 const clubThreshold = 87
 let getZhaoClubList = async function(){
     return await query(
         `SELECT name FROM user WHERE coin >= ${clubThreshold}`
     )
 }
+
 let createReplyTable = async function(){
     return await query(
         `CREATE TABLE IF NOT EXISTS reply(
@@ -266,4 +268,4 @@ let addReply = async function (username, postId, content) {
     return true
 }
 createPost()
-module.exports = { query, createUser, addUser, validateUser, clearUser, createPost, addPost, listUser, listPost, listSpecificPost, lovePost, addCoin, angryPost, deductCoin, applyNewBoard, queryCoin, getZhaoClubList, getReply, addReply}
+module.exports = {query, createUser, addUser, validateUser, clearUser, createPost, addPost, listUser, listPost, listSpecificPost, lovePost, addCoin, angryPost, deductCoin, applyNewBoard, queryCoin, getZhaoClubList, getReply, addReply}

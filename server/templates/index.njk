@@ -18,32 +18,17 @@
                 </a>
             </ul>
         </div>
-        <form action="select_board" method="post">
+        <form action="/" method="get">
             <div class="card text-center mt-3 mb-2" style="width: 100%;">
                 <div class="card-header">
                     分類看板
                 </div>
                 <ul class="list-group list-group-flush">
-                    {# <a id="gossiping-link" class="list-group-item" href="#">
-                        八卦
-                    </a>
-                    <a id="gossiping-link" class="list-group-item" href="#">
-                        西斯
-                    </a>
-                    <a id="gossiping-link" class="list-group-item" href="#">
-                        表特
-                    </a>
-                    <a id="gossiping-link" class="list-group-item" href="#">
-                        希洽
-                    </a>
-                    <a id="gossiping-link" class="list-group-item" href="#">
-                        電蝦
-                    </a> #}
-                    <button id="gossiping-link" class="list-group-item" name="select_board" value="八卦">八卦</button>
-                    <button id="gossiping-link" class="list-group-item" name="select_board" value="西斯">西斯</button>
-                    <button id="gossiping-link" class="list-group-item" name="select_board" value="告白">告白</button>
-                    <button id="gossiping-link" class="list-group-item" name="select_board" value="希洽">希洽</button>
-                    <button id="gossiping-link" class="list-group-item" name="select_board" value="電蝦">電蝦</button>
+                    <button id="gossiping-link" class="list-group-item" name="board" value="八卦">八卦</button>
+                    <button id="gossiping-link" class="list-group-item" name="board" value="西斯">西斯</button>
+                    <button id="gossiping-link" class="list-group-item" name="board" value="告白">告白</button>
+                    <button id="gossiping-link" class="list-group-item" name="board" value="希洽">希洽</button>
+                    <button id="gossiping-link" class="list-group-item" name="board" value="電蝦">電蝦</button>
                 </ul>
             </div>
             <a id="post-article" href="#" class="text-white" data-toggle="modal" data-target="#new-board-modal">

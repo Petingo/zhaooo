@@ -3,8 +3,9 @@ const http = require('http')
 const static = require('node-static')
 const Cookies = require('cookies')
 const querystring = require('querystring')
-// const model = require('./database-sqlite')
-const model = require('./database-mysql')
+const model = require('./database-sqlite')
+// const model = require('./database-mysql')
+const url = require('url')
 
 const host = "127.0.0.1"
 const port = 8000
@@ -18,11 +19,6 @@ nunjucks.configure(templateDir, { autoescape: true });
 urls['/'] = {
     method: 'get',
     controller: 'index'
-}
-
-urls['/select_board'] = {
-    method: 'post',
-    controller: 'select_board'
 }
 
 urls['/register'] = {
@@ -98,7 +94,7 @@ urls['/new_board'] = {
         });
         request.on('end', async function () {
             body = querystring.parse(body)
-            
+
             var keys = ['keyboard cat']
             var cookies = new Cookies(request, response, { keys: keys })
             var username = cookies.get("LastVisit")
@@ -147,7 +143,7 @@ views['test'] = function (request, response) {
     htmlPage(response, "test.njk", data)
 }
 
-views['index'] = async function (request, response) {
+views['index'] = async function (request, response, board) {
     console.log('index')
     // await model.createPost()
     let keys = ['keyboard cat']
@@ -164,14 +160,23 @@ views['index'] = async function (request, response) {
         htmlPage(response, "login.njk", data)
         return
     }
+
+    let result
+
+    board = String(board)
+    // console.log(board)
+    if (board != "undefined") {
+        result = await model.listSpecificPost(board)
+    } else {
+        result = await model.listPost()
+    }
     console.log("start asking for data")
     let zhaoClubList = JSON.stringify(await model.getZhaoClubList())
-    let result = await model.listPost(lastVisit)
     let replyRaw = Object.values(JSON.parse(JSON.stringify(await model.getReply())))
-    
+
     let reply = {}
-    for( r of replyRaw){
-        if(reply[r.postId] == undefined){
+    for (r of replyRaw) {
+        if (reply[r.postId] == undefined) {
             reply[r.postId] = []
         }
         reply[r.postId].push(r)
@@ -194,7 +199,7 @@ views['index'] = async function (request, response) {
                 "id": r.id,
                 "name": r.name,
                 "in_club": zhaoClubList.indexOf(r.name) > -1 ? true : false,
-                "time": toDateString(r.time),
+                "time": toDateString(new Date(r.time)),
                 "content": r.content,
                 "love": r.love,
                 "angry": r.angry,
@@ -207,56 +212,6 @@ views['index'] = async function (request, response) {
         }
     }
     htmlPage(response, "index.njk", data)
-}
-
-views['select_board'] = async function (request, response) {
-    console.log('select_board')
-    await model.createPost()
-    let keys = ['keyboard cat']
-    let cookies = new Cookies(request, response, { keys: keys })
-    let lastVisit = cookies.get('LastVisit', { signed: true })
-
-    let body = "";
-    request.on('data', function (chunk) {
-        body += chunk;
-    });
-
-    request.on('end', async function () {
-        body = querystring.parse(body)
-        // console.log(body.select_board)
-        let result = await model.listSpecificPost(String(body.select_board))
-
-        // console.log(result)
-
-        let data = {
-            user_name: lastVisit,
-            articles: []
-        }
-
-        result = [].slice.call(result).sort(function (a, b) {
-            if (a.time > b.time) { return -1 }
-            if (a.time < b.time) { return 1 }
-        })
-
-        let counter = 0;
-        for (r of result) {
-            data.articles.push(
-                {
-                    "id": r.id,
-                    "name": r.name,
-                    "time": toDateString(r.time),
-                    "content": r.content,
-                    "love": r.love,
-                    "angry": r.angry
-                })
-            counter++;
-            if (counter == 10) {
-                break;
-            }
-        }
-
-        htmlPage(response, "index.njk", data)
-    });
 }
 
 views['login'] = function (request, response) {
@@ -402,15 +357,20 @@ function requestHandler(request, response) {
             staticServer.serve(request, response);
         }
         else {
-            let url = urls[request.url]; // ffff.com/fuck
+            let params = url.parse(request.url, true).query
+            let board = String(params.board)
+            if (board != "undefined") {
+                return views['index'](request, response, board)
+            }
+            let urlString = urls[request.url]; // ffff.com/fuck
 
-            if (url == undefined) {
+            if (urlString == undefined) {
                 console.error("invalid request")
             }
             else {
-                let controller = url.controller
+                let controller = urlString.controller
                 if (typeof (controller) == "string") {
-                    return views[url.controller](request, response)
+                    return views[urlString.controller](request, response)
                 }
                 else if (typeof (controller == "function")) {
                     return controller(request, response)
@@ -422,7 +382,6 @@ function requestHandler(request, response) {
     catch (e) {
         console.error(e);
     }
-
 }
-http.createServer(requestHandler).listen(port, host);
+http.createServer(requestHandler).listen(port, host)
 console.log("Server has started.");
