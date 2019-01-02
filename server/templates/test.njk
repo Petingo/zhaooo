@@ -1,1 +1,36 @@
 {% extends "base.njk" %}
+
+{% block content %}
+    <div class="text-center">
+        <script type="text/javascript">
+            window.onload = function () {
+                try {
+                    TagCanvas.Start('myCanvas', 'tags', {
+                        textColour: '#555555',
+                        reverse: true,
+                        outlineThickness: 0,
+                        outlineMethod: 'none',
+                        depth: 0.8,
+                        maxSpeed: 0.15
+                    });
+                } catch (e) {
+                    // something went wrong, hide the canvas container
+                    document.getElementById('myCanvasContainer').style.display = 'none';
+                }
+            };
+        </script>
+        <div id="myCanvasContainer mt-4">
+            <canvas width="500" height="500" id="myCanvas">
+                <p>Anything in here will be replaced on browsers that support the canvas element</p>
+            </canvas>
+        </div>
+        <div id="tags">
+            <ul>
+                <li>
+                    <a href="#">沒朋友QQ</a>
+                </li>
+        </div>
+        <h4 class="text-muted"style="font-size: 3.5vh;">好朋友地圖</h4>
+    </div>
+
+{% endblock %}
