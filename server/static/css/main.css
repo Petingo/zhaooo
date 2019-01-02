@@ -67,7 +67,6 @@
 
 .blink {
     display: inline-block;
-    font-size: 20px;
     background: linear-gradient(left, #ffd500, #ffea00);
     background: -webkit-linear-gradient(left, #ffd500, #ffea00);
     background: -o-linear-gradient(right, #ffd500, #ffea00);
