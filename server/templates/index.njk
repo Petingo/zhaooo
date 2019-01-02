@@ -10,7 +10,7 @@
                         {{user_name}}
                     </p>
                 </li>
-                <a id="wall-link" class="list-group-item" href="#">
+                <a id="wall-link" class="list-group-item" href="/">
                     動態牆
                 </a>
                 <a id="class-link" class="list-group-item" href="#">
@@ -18,31 +18,38 @@
                 </a>
             </ul>
         </div>
-        <div class="card text-center mt-3 mb-2 " style="width: 100%;">
-            <div class="card-header">
-                分類看版
+        <form action="select_board" method="post">
+            <div class="card text-center mt-3 mb-2" style="width: 100%;">
+                <div class="card-header">
+                    分類看板
+                </div>
+                <ul class="list-group list-group-flush">
+                    {# <a id="gossiping-link" class="list-group-item" href="#">
+                        八卦
+                    </a>
+                    <a id="gossiping-link" class="list-group-item" href="#">
+                        西斯
+                    </a>
+                    <a id="gossiping-link" class="list-group-item" href="#">
+                        表特
+                    </a>
+                    <a id="gossiping-link" class="list-group-item" href="#">
+                        希洽
+                    </a>
+                    <a id="gossiping-link" class="list-group-item" href="#">
+                        電蝦
+                    </a> #}
+                    <button id="gossiping-link" class="list-group-item" name="select_board" value="八卦">八卦</button>
+                    <button id="gossiping-link" class="list-group-item" name="select_board" value="西斯">西斯</button>
+                    <button id="gossiping-link" class="list-group-item" name="select_board" value="告白">告白</button>
+                    <button id="gossiping-link" class="list-group-item" name="select_board" value="希洽">希洽</button>
+                    <button id="gossiping-link" class="list-group-item" name="select_board" value="電蝦">電蝦</button>
+                </ul>
             </div>
-            <ul class="list-group list-group-flush">
-                <a id="gossiping-link" class="list-group-item" href="#">
-                    八卦
-                </a>
-                <a id="gossiping-link" class="list-group-item" href="#">
-                    西斯
-                </a>
-                <a id="gossiping-link" class="list-group-item" href="#">
-                    告白
-                </a>
-                <a id="gossiping-link" class="list-group-item" href="#">
-                    希洽
-                </a>
-                <a id="gossiping-link" class="list-group-item" href="#">
-                    電蝦
-                </a>
-            </ul>
-        </div>
-        <a id="post-article" href="#" class="text-white" data-toggle="modal" data-target="#new-board-modal">
-            申請新看版
-        </a>
+            <a id="post-article" href="#" class="text-white" data-toggle="modal" data-target="#new-board-modal">
+                申請新看板
+            </a>
+        </form>
     </div>
 
 {% endblock %}
@@ -77,19 +84,21 @@
 
                     <div class="modal-body">
                         <div class="form-group">
-                            <textarea class="form-control" name="content" rows="5"></textarea>
+                            <textarea class="form-control" name="content" rows="3"></textarea>
                         </div>
                         <div class="form-group form-check" style="margin-bottom: 0px">
-                            <input type="checkbox" class="form-check-input" id="anonymous">
+                            <input type="checkbox" class="form-check-input" name="anonymous">
                             <label class="form-check-label" for="exampleCheck1">匿名發表</label>
                         </div>
                     </div>
-
+                    
                     {# 選看板用的 #}
-                    <input id="select-board" type="hidden" name="board">
+                    <input id="select-board" type="hidden" name="input_board" value="八卦">
 
                     <div class="modal-footer">
-                        <button id="select-post-board" class="btn btn-info dropdown-toggle dropdown-menu-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">八卦</button>
+                        <button class="btn btn-info dropdown-toggle" type="button" id="select-post-board" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        八卦
+                        </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <a class="dropdown-item select-post-board-item" href="#">八卦</a>
                             <a class="dropdown-item select-post-board-item" href="#">西斯</a>
@@ -107,7 +116,7 @@
                             });
                         </script>
                         {# <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button> #}
-                        <button id="submit-article" class="btn btn-primary btn-submit" type="submit">發射</button>
+                        <button id="submit-article" class="btn btn-primary" type="submit">發射</button>
                     </div>
                 </form>
             </div>
@@ -127,7 +136,7 @@
                 <form id="new-board-form" action="new_board" method="post" target="hiddenFrame">
 
                     <div class="modal-body">
-                        <input type="text" name="name" id="new-board-name" class="form-control" placeholder="看版名稱" required="required" autofocus="autofocus">
+                        <input type="text" name="name" id="new-board-name" class="form-control" placeholder="看板名稱" required="required" autofocus="autofocus">
                         <textarea class="form-control mt-2" name="reason" rows="5" placeholder="申請事由"></textarea>
                     </div>
 
@@ -146,7 +155,7 @@
     <script>
         $('#new-board-submit').on("click", function (event) {
             if ($('#new-board-name').val() == '') {
-                alert("啊你不打版名是要申請三小");
+                alert("啊你不打板名是要申請三小");
             } else {
                 $.post("new_board", $("#new-board-form").serialize());
                 $("#new-board-form")[0].reset()

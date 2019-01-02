@@ -32,8 +32,9 @@ let createUser = async function () {
             CREATE TABLE IF NOT EXISTS user(
                 id       INT     NOT NULL    AUTO_INCREMENT,
                 name     TEXT    NOT NULL,
-                password INT     NOT NULL, 
-                PRIMARY KEY (id)
+                password INT     NOT NULL,
+                coin     INT     DEFAULT 0, 
+                PRIMARY  KEY (id)
             )
             `
         )
@@ -47,7 +48,8 @@ let createUser = async function () {
 let addUser = async function (name, password) {
     try { // statements to try
         await query(
-            `INSERT INTO user ( name,password ) VALUE ( ` + '"' + String(name) + '"' + `,` + String(password) + `)`
+            // `INSERT INTO user (name, password) VALUE ( ` + '"' + String(name) + '"' + `,` + String(password) + `)`
+            `INSERT INTO user (name, password) VALUE ("${name}", "${password}")`
         )
     }
     catch (e) {
@@ -58,17 +60,15 @@ let addUser = async function (name, password) {
 }
 
 let validateUser = async function (name, password) {
-
-    try { // statements to try
-        await query(
-            "SELECT * FROM user WHERE name = '" + String(name) + "' AND password = '" + String(password) + "'"
-        )
+    let result = await query(
+        // "SELECT * FROM user WHERE name = '" + String(name) + "' AND password = '" + String(password) + "'"
+        `SELECT * FROM user WHERE name = "${name}" AND password = "${password}"`
+    )
+    if (result.length == 1) {
+        return true        
+    } else {
+        return false
     }
-    catch (e) {
-        return console.error(e)
-    }
-    return true
-
 }
 
 let clearUser = async function () {
@@ -115,7 +115,7 @@ let createPost = async function () {
 let addPost = async function (block) {
     try { // statements to try
         await query(
-            "INSERT INTO post (name, time, content) VALUE (?, ?, ?)", block
+            "INSERT INTO post (name, time, content, board) VALUE (?, ?, ?, ?)", block
         )
     }
     catch (e) {
@@ -125,8 +125,14 @@ let addPost = async function (block) {
 }
 
 let listPost = async function (lastVisit) {
-    return result = await query(
+    return await query(
         "SELECT * FROM post"
+    )
+}
+
+let listSpecificPost = async function (board) {
+    return await query(
+        `SELECT * FROM post WHERE board = "${board}"`
     )
 }
 
@@ -135,6 +141,24 @@ let lovePost = async function (postId) {
         await query(
             `UPDATE post SET love = love + 1 WHERE id = ${postId}`
         )
+    }
+    catch (e) {
+        return console.error(e)
+    }
+    return true
+}
+
+let addCoin = async function (postId) {
+    try { // statements to try
+        let username = await query(
+            `SELECT name FROM post WHERE id = ${postId}`
+        )
+        username = String(username[0].name)
+        console.log(username)
+        await query(
+            `UPDATE user SET coin = coin + 1 WHERE name = "${username}"`
+        )
+        console.log("coin + 1")
     }
     catch (e) {
         return console.error(e)
@@ -154,8 +178,26 @@ let angryPost = async function (postId) {
     return true
 }
 
+let deductCoin = async function (postId) {
+    try { // statements to try
+        let username = await query(
+            `SELECT name FROM post WHERE id = ${postId}`
+        )
+        username = String(username[0].name)
+        console.log(username)
+        await query(
+            `UPDATE user SET coin = coin - 1 WHERE name = "${username}"`
+        )
+        console.log("coin - 1")
+    }
+    catch (e) {
+        return console.error(e)
+    }
+    return true
+}
 
-let applyNewBoard = async function(block){
+
+let applyNewBoard = async function(block) {
     try { // statements to try
         await query(
             `
@@ -177,5 +219,11 @@ let applyNewBoard = async function(block){
     return true
 }
 
+let queryCoin = async function (user) {
+    return await query(
+        `SELECT coin FROM user WHERE name = "${user}"`
+    )
+}
+
 createPost()
-module.exports = { query, createUser, addUser, validateUser, clearUser, createPost, addPost, listUser, listPost, lovePost, angryPost, applyNewBoard }
+module.exports = { query, createUser, addUser, validateUser, clearUser, createPost, addPost, listUser, listPost, listSpecificPost, lovePost, addCoin, angryPost, deductCoin, applyNewBoard, queryCoin}
