@@ -21,6 +21,28 @@ urls['/'] = {
     controller: 'index'
 }
 
+urls['/friend']={
+    method: 'get',
+    controller: 'friend'
+}
+
+urls['/add_friend'] = {
+    method: 'post',
+    controller: async function (request, response) {
+        let body = "";
+        request.on('data', function (chunk) {
+            body += chunk;
+        });
+        request.on('end', async function () {
+            body = querystring.parse(body);
+            let username = await getUserName(request, response)
+            let newFriendName = body.username
+            
+            model.addFriend(username, newFriendName)
+        });
+    }
+}
+
 urls['/register'] = {
     method: 'get',
     controller: 'register'
@@ -57,7 +79,7 @@ urls['/reply'] = {
         });
         request.on('end', async function () {
             body = querystring.parse(body);
-            model.addReply(body.username, body.postId, body.content);
+            model.addReply(await getUserName(request, response), body.postId, body.content);
         });
     }
 }
@@ -143,9 +165,30 @@ views['test'] = function (request, response) {
     htmlPage(response, "test.njk", data)
 }
 
+async function getUserName(request, response){
+    let keys = ['keyboard cat']
+    let cookies = new Cookies(request, response, { keys: keys })
+    let lastVisit = cookies.get('LastVisit', { signed: true })
+    return lastVisit;
+}
+
+views['friend'] = async function (request, response) {
+    console.log('friend')
+    let username = await getUserName(request, response);
+    
+    let friends = (await model.listFriend(username))[0].friend;
+    
+    let data = {
+        user_name: username,
+        friends: friends == null ? [''] : friends.split(',')
+    }
+    console.log(data)
+    htmlPage(response, "friend.njk", data)
+}
+
 views['index'] = async function (request, response, board) {
     console.log('index')
-    // await model.createPost()
+    await model.createPost()
     let keys = ['keyboard cat']
     let cookies = new Cookies(request, response, { keys: keys })
     let lastVisit = cookies.get('LastVisit', { signed: true })

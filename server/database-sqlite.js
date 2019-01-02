@@ -13,15 +13,15 @@ let createUser = async function () {
         await query(
             `
             CREATE TABLE IF NOT EXISTS user(
-                id       INT  PRIMARY KEY   AUTOINCREMENT,
-                name     TEXT NOT NULL,
-                password TEXT NOT NULL,
-                coin     INT  DEFAULT 0
+                id       INTEGER  PRIMARY KEY   AUTOINCREMENT,
+                name     TEXT     NOT NULL,
+                password TEXT     NOT NULL,
+                coin     INT      DEFAULT 0,
+                friend   TEXT
             )
             `
         )
-    }
-    catch (e) {
+    } catch (e) {
         return console.error(e)
     }
     return true
@@ -32,8 +32,7 @@ let addUser = async function (name, password) {
         await query(
             `INSERT INTO user (name, password) VALUES ("${name}", "${password}")`
         )
-    }
-    catch (e) {
+    } catch (e) {
         return console.error(e)
     }
     return true
@@ -57,8 +56,7 @@ let clearUser = async function () {
         await query(
             `DROP TABLE user`
         )
-    }
-    catch (e) {
+    } catch (e) {
         return console.error(e)
     }
     return true
@@ -85,8 +83,7 @@ let createPost = async function () {
             )
             `
         )
-    }
-    catch (e) {
+    } catch (e) {
         return console.error(e)
     }
     return true
@@ -102,8 +99,7 @@ let addPost = async function (block) {
         await query(
             `INSERT INTO post (name, time, content, board) VALUES ("${name}", "${time}", "${content}", "${board}")`
         )
-    }
-    catch (e) {
+    } catch (e) {
         return console.error(e)
     }
     return true
@@ -127,8 +123,7 @@ let lovePost = async function (postId) {
         await query(
             `UPDATE post SET love = love + 1 WHERE id = ${postId}`
         )
-    }
-    catch (e) {
+    } catch (e) {
         return console.error(e)
     }
     return true
@@ -145,8 +140,7 @@ let addCoin = async function (postId) {
             `UPDATE user SET coin = coin + 1 WHERE name = "${username}"`
         )
         console.log("coin + 1")
-    }
-    catch (e) {
+    } catch (e) {
         return console.error(e)
     }
     return true
@@ -157,8 +151,7 @@ let angryPost = async function (postId) {
         await query(
             `UPDATE post SET angry = angry + 1 WHERE id = ${postId}`
         )
-    }
-    catch (e) {
+    } catch (e) {
         return console.error(e)
     }
     return true
@@ -175,8 +168,7 @@ let deductCoin = async function (postId) {
             `UPDATE user SET coin = coin - 1 WHERE name = "${username}"`
         )
         console.log("coin - 1")
-    }
-    catch (e) {
+    } catch (e) {
         return console.error(e)
     }
     return true
@@ -199,8 +191,7 @@ let applyNewBoard = async function (block) {
         await query(
             `INSERT INTO new_board_application (name, reason, username) VALUES ("${name}", "${reason}", "${username}")`
         )
-    }
-    catch (e) {
+    } catch (e) {
         return console.error(e)
     }
     return true
@@ -222,7 +213,7 @@ let getZhaoClubList = async function () {
 let createReplyTable = async function () {
     return await query(
         `CREATE TABLE IF NOT EXISTS reply(
-            id       INT     NOT NULL  PRIMARY KEY  AUTOINCREMENT,
+            id       INTEGER NOT NULL  PRIMARY KEY  AUTOINCREMENT,
             username TEXT    NOT NULL,
             postId   INT     NOT NULL,
             content  TEXT    NOT NULL
@@ -249,11 +240,41 @@ let addReply = async function (username, postId, content) {
         await query(
             `INSERT INTO reply (username, postId, content) VALUES ('${username}', ${postId}, '${content}')`
         )
-    }
-    catch (e) {
+    } catch (e) {
         return console.error(e)
     }
     return true
+}
+
+let addFriend = async function (username, newFriendName) {
+    try { // statements to try
+        query(
+            `SELECT friend FROM user WHERE name = '${username}';`
+        ).then((friend) => {
+            friend = friend[0].friend
+            if (friend == null) {
+                friend = ''
+            }
+            query(
+                `UPDATE user SET friend = '${friend + ',' + newFriendName}' WHERE name = '${username}';`
+            )
+        })
+        // then( friends => {
+        //     console.log(friends)
+        //     query(
+        //         `UPDATE user SET friend = '${friends + ',' + newFriendName}' WHERE name = '${username}';`
+        //     )
+        // }) 
+    } catch (e) {
+        return console.error(e)
+    }
+    return true
+}
+
+let listFriend = async function (username) {
+    return await query(
+        `SELECT friend FROM user WHERE name = '${username}';`
+    )
 }
 
 async function test() {
@@ -287,4 +308,26 @@ async function test() {
 
 test()
 
-module.exports = { query, createUser, addUser, validateUser, clearUser, createPost, addPost, listUser, listPost, listSpecificPost, lovePost, addCoin, angryPost, deductCoin, applyNewBoard, queryCoin, getZhaoClubList, getReply, addReply }
+module.exports = {
+    query,
+    createUser,
+    addUser,
+    validateUser,
+    clearUser,
+    createPost,
+    addPost,
+    listUser,
+    listPost,
+    listSpecificPost,
+    lovePost,
+    addCoin,
+    angryPost,
+    deductCoin,
+    applyNewBoard,
+    queryCoin,
+    getZhaoClubList,
+    getReply,
+    addReply,
+    addFriend,
+    listFriend
+}

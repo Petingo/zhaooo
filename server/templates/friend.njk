@@ -1,0 +1,86 @@
+{% extends "base.njk" %}
+
+{% block left_nav %}
+    <div class="text-center" style="height:100%;">
+        <div class="card text-center" style="width: 100%;">
+            <ul class="list-group list-group-flush">
+                <li class="pt-2">
+                    <img src="/static/media/img/avatar.svg" alt="Avatar" style="width: 60%">
+                    <p>
+                        {{user_name}}
+                    </p>
+                    <a id="" class="list-group-item" href="#">
+                        小圈圈
+                    </a>
+                    <a id="" class="list-group-item" href="#">
+                        家人們
+                    </a>
+                    {# <button class="btn btn-primary btn-submit-reply mb-3" type="submit">加為好友</button> #}
+                </li>
+            </ul>
+        </div>
+        <form id="add-friend-form" class="my-3" action="add_friend" method="post" target="hiddenFrame">
+            <input type="text" id="input-username" class="form-control reply-content" placeholder="加朋友！" aria-label="reply" aria-describedby="reply" name="username" required="required">
+            <div class="input-group-append">
+                <button class="btn btn-secondary" type="submit" id="add-friend-submit" style="display: none;">送出</button>
+            </div>
+            {# TODO：把名字存進資料庫 #}
+        </form>
+        <script>
+            $(function () {
+                $("#add-friend-submit").click(function () {
+                    event.preventDefault();
+                    let username = $(`#input-username`).val()
+                    if (username.length == 0) {
+                        return
+                    }
+
+                    let form = $(`#add-friend-form`)[0]
+                    $(form).submit()
+                    $(`#input-username`).val("")
+                });
+            });
+        </script>
+    </div>
+
+{% endblock %}
+
+{% block content %}
+    <div class="text-center">
+        <script type="text/javascript">
+            window.onload = function () {
+                try {
+                    TagCanvas.Start('myCanvas', 'tags', {
+                        textColour: '#555555',
+                        reverse: true,
+                        outlineThickness: 0,
+                        outlineMethod: 'none',
+                        depth: 0.8,
+                        maxSpeed: 0.15
+                    });
+                } catch (e) {
+                    // something went wrong, hide the canvas container
+                    document.getElementById('myCanvasContainer').style.display = 'none';
+                }
+            };
+        </script>
+        <div id="myCanvasContainer mt-4">
+            <canvas width="500" height="500" id="myCanvas">
+                <p>Anything in here will be replaced on browsers that support the canvas element</p>
+            </canvas>
+        </div>
+        <div id="tags">
+            <ul>
+                <li id="friend-tags">
+                    {% for friend in friends %}
+                        <a href="#">
+                            {{friend}}
+                        </a>
+                    {% endfor %}
+                </li>
+            </ul>
+        </div>
+        <h4 class="text-muted" style="font-size: 3.5vh;">好朋友地圖</h4>
+    </div>
+
+{% endblock %}
